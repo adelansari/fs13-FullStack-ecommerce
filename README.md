@@ -44,5 +44,8 @@ Running the backend app:
 - Folder organization by adding layout and models into `app` folder. Also adding all app features in `features` folder such as react components.
 - Adding [Material UI](https://mui.com/material-ui/getting-started/installation/) styling framework
 - Adding image assets to public folder + some styling with Material UI
+- Adding product cards and styling
+- Adding light and dark theme using Material UI
+- Setting up react router: `npm install react-router-dom`
 
 
