@@ -1,10 +1,15 @@
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography, styled } from "@mui/material";
 import { Product } from "../../app/models/product";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface Props {
     product: Product;
 }
+
+const StyledDialogActions = styled(DialogActions)({
+    justifyContent: 'space-between',
+});
 
 export default function ProductCard({ product }: Props) {
     const [open, setOpen] = useState(false);
@@ -91,6 +96,7 @@ export default function ProductCard({ product }: Props) {
                                 boxShadow: 'none'
                             }
                         }}
+                        component={Link} to={`/catalog/${product.id}`}
                     >
                         Details
                     </Button>
@@ -104,9 +110,12 @@ export default function ProductCard({ product }: Props) {
                         <img src={product.pictureUrl} alt={product.name} style={{ width: '100%' }} />
                     </DialogContentText>
                 </DialogContent>
-                <DialogActions>
+                <StyledDialogActions>
+                    <Button component={Link} to={`/catalog/${product.id}`}>
+                        Details
+                    </Button>
                     <Button onClick={handleClose}>Exit</Button>
-                </DialogActions>
+                </StyledDialogActions>
             </Dialog>
         </>
     )

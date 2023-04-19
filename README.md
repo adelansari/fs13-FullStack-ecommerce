@@ -47,5 +47,6 @@ Running the backend app:
 - Adding product cards and styling
 - Adding light and dark theme using Material UI
 - Setting up react router: `npm install react-router-dom`
-
+- Adding Nav Links to header and styling
+- Fetching data with axios: `npm install axios` on component load
 
