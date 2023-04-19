@@ -12,7 +12,12 @@
 * Backend: ASP .NET Core, Entity Framework Core, PostgreSQL
 
 ## Steps in creating this project from scratch
-- Creating a solution file in the directory: `otnet new sln`
+
+### Backend
+
+Setting up:
+
+- Creating a solution file in the directory: `dotnet new sln`
 - Creating the backend API: `dotnet new webapi -o backend`
 - Adding the backend server into the solution (backend.csproj): `dotnet sln add backend`
 - Creating Product class in Entities
@@ -25,11 +30,14 @@
  - Creating the database: `dotnet ef database update`
  - Adding seed data for products into the database using `DbInitializer` class.
  - Migrate and seed the data on app startup using `Program` class by creating a scope (removing old db using `dotnet ef database drop`)
- - Creating product controller for api
+ - Creating product controller for api with the following end points: `api/products` and `api/products/{id}`
+ - Creating the .gitignore using `dotnet new gitignore`
 
+Running the backend app:
+- `dotnet run`
+- `dotnet watch --no-hot-reload` during development
 
-## Running application
+### Frontend
+- Creating a react app: `npx create-react-app frontend --template typescript --use-npm`
 
-### during development
-`dotnet watch --no-hot-reload`
 
