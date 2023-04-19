@@ -32,8 +32,6 @@ function App() {
       <Container>
         <Catalog products={products} addProduct={addProduct} />
       </Container>
-
-
     </>
   );
 }

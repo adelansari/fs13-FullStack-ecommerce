@@ -3,7 +3,7 @@ import { deepOrange } from "@mui/material/colors";
 
 export default function Header() {
     return (
-        <AppBar position='static' sx={{ mb: 4 }}>
+        <AppBar position='static' sx={{ mb: 4, bgcolor: 'warning.light' }}>
             <Toolbar>
                 <Avatar
                     sx={{
