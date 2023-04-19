@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using backend.Data;
 using backend.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // This class inherits from ControllerBase
 namespace backend.Controllers
@@ -15,30 +16,38 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        // StoreContext object that will be used to access the database - using dependency injection
-        private readonly StoreContext context;
+        // Constructor that takes in a StoreContext object --dependency injection
+        private readonly StoreContext _context;
 
-        // Constructor that takes in a StoreContext object
         public ProductsController(StoreContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
         // GET api/products
         [HttpGet]
         // GetProducts method returns a list of all products in the database
-        public ActionResult<List<Product>> GetProducts()
+        // Async
+        public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            var products = context.Products.ToList();
+            var products = await _context.Products.ToListAsync();
+            // Return a 200 OK HTTP response with the list of products
             return Ok(products);
         }
+
+        // Synchronous
+        // public ActionResult<List<Product>> GetProducts()
+        // {
+        //     var products = context.Products.ToList();
+        //     return Ok(products);
+        // }
 
         // GET api/products/{id}
         [HttpGet("{id}")]
         // GetProduct method returns a single product by its ID
-        public ActionResult<Product> GetProduct(int id)
+        public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            return context.Products.Find(id);
+            return await _context.Products.FindAsync(id);
         }
     }
 }

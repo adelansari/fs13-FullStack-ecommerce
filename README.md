@@ -25,7 +25,7 @@
  - Creating the database: `dotnet ef database update`
  - Adding seed data for products into the database using `DbInitializer` class.
  - Migrate and seed the data on app startup using `Program` class by creating a scope (removing old db using `dotnet ef database drop`)
- - Creating backend controller
+ - Creating product controller for api
 
 
 ## Running application
