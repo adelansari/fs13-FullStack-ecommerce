@@ -39,5 +39,10 @@ Running the backend app:
 
 ### Frontend
 - Creating a react app: `npx create-react-app frontend --template typescript --use-npm`
+- Creating react hooks and fetching product data + configuring CORS for backend
+- Adding typescript interface for Product
+- Folder organization by adding layout and models into `app` folder. Also adding all app features in `features` folder such as react components.
+- Adding [Material UI](https://mui.com/material-ui/getting-started/installation/) styling framework
+- Adding image assets to public folder + some styling with Material UI
 
 
