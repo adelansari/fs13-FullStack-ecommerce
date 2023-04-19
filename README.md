@@ -23,4 +23,13 @@
  - Making sure I have installed dotnet-ef
  - Doing migration when the backend api is not running using: `dotnet ef migrations add InitialCreate -o Data/Migrations`
  - Creating the database: `dotnet ef database update`
+ - Adding seed data for products into the database using `DbInitializer` class.
+ - Migrate and seed the data on app startup using `Program` class by creating a scope (removing old db using `dotnet ef database drop`)
+ - Creating backend controller
+
+
+## Running application
+
+### during development
+`dotnet watch --no-hot-reload`
 

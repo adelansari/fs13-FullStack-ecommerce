@@ -1,14 +1,17 @@
 using backend.Data;
 using Microsoft.EntityFrameworkCore;
 
+// Create a new web application builder
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Add Swagger/OpenAPI services to the container
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add a database context to the container
 builder.Services.AddDbContext<StoreContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -19,12 +22,36 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    // Enable middleware to serve generated Swagger as a JSON endpoint.
     app.UseSwagger();
+
+    // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+    // specifying the Swagger JSON endpoint.
     app.UseSwaggerUI();
 }
 
+// Enable authorization middleware
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Create a new scope for services
+var scope = app.Services.CreateScope();
+
+// Get database context and logger services
+var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
+var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+try
+{
+    // Apply any pending migrations to the database
+    context.Database.Migrate();
+
+    // Seed the database with initial data
+    DbInitializer.Initialize(context);
+}
+catch (Exception ex)
+{
+    logger.LogError(ex, "Error occured during database migration or seeding.");
+}
 
 app.Run();
