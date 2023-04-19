@@ -11,3 +11,8 @@
 * Frontend: SASS, TypeScript, React, Redux Toolkit
 * Backend: ASP .NET Core, Entity Framework Core, PostgreSQL
 
+## Steps in creating this project from scratch
+- Creating a solution file in the directory: `otnet new sln`
+- Creating the backend API: `dotnet new webapi -o backend`
+- Adding the backend server into the solution (backend.csproj): `dotnet sln add backend`
+
