@@ -98,3 +98,5 @@ frontend/package-*.json
 .DS_Store
 .AppleDouble
 .LSOverride
+
+.fake
