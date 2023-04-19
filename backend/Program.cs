@@ -21,6 +21,8 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+// app.UseDeveloperExceptionPage();  being used by default to return exception to the client
+
 if (app.Environment.IsDevelopment())
 {
     // Enable middleware to serve generated Swagger as a JSON endpoint.
