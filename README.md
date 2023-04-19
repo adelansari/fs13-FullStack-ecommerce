@@ -15,4 +15,10 @@
 - Creating a solution file in the directory: `otnet new sln`
 - Creating the backend API: `dotnet new webapi -o backend`
 - Adding the backend server into the solution (backend.csproj): `dotnet sln add backend`
+- Creating Product class in Entities
+- Adding entity framework to backend. Openning NuGet Gallery and installing:
+ `Microsoft.EntityFrameworkCore.Sqlite`
+ `Microsoft.EntityFrameworkCore.Sqlite`
+ - Creating folder Data to store data related things and creating a `StoreContext` class and add it to service container in `Program` class.
+ - 
 
