@@ -26,7 +26,7 @@ const navStyles = {
     color: 'success.light'
   },
   '&.active': {
-    color: 'text.secondary'
+    color: 'warning.main'
   }
 }
 

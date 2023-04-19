@@ -25,6 +25,10 @@ const NeonTableCell = styled(TableCell)(({ theme }) => ({
     border: `1px solid ${theme.palette.primary.main}`,
 }));
 
+const BoldNeonTableCell = styled(NeonTableCell)({
+    fontWeight: 'bold',
+  });
+
 
 export default function ProductDetails() {
     const { id } = useParams<{ id: string }>();
@@ -59,23 +63,23 @@ export default function ProductDetails() {
                                 </NeonTableCell>
                             </TableRow>
                             <TableRow>
-                                <NeonTableCell>Name</NeonTableCell>
+                                <BoldNeonTableCell>Name</BoldNeonTableCell>
                                 <NeonTableCell>{product.name}</NeonTableCell>
                             </TableRow>
                             <TableRow>
-                                <NeonTableCell>Description</NeonTableCell>
+                                <BoldNeonTableCell>Description</BoldNeonTableCell>
                                 <NeonTableCell>{product.description}</NeonTableCell>
                             </TableRow>
                             <TableRow>
-                                <NeonTableCell>Type</NeonTableCell>
+                                <BoldNeonTableCell>Category</BoldNeonTableCell>
                                 <NeonTableCell>{product.category}</NeonTableCell>
                             </TableRow>
                             <TableRow>
-                                <NeonTableCell>Brand</NeonTableCell>
+                                <BoldNeonTableCell>Company</BoldNeonTableCell>
                                 <NeonTableCell>{product.company}</NeonTableCell>
                             </TableRow>
                             <TableRow>
-                                <NeonTableCell>Quantity in stock</NeonTableCell>
+                                <BoldNeonTableCell>Remaining</BoldNeonTableCell>
                                 <NeonTableCell>{product.quantityRemains}</NeonTableCell>
                             </TableRow>
                         </TableBody>
