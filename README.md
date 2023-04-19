@@ -20,5 +20,7 @@
  `Microsoft.EntityFrameworkCore.Sqlite`
  `Microsoft.EntityFrameworkCore.Sqlite`
  - Creating folder Data to store data related things and creating a `StoreContext` class and add it to service container in `Program` class.
- - 
+ - Making sure I have installed dotnet-ef
+ - Doing migration when the backend api is not running using: `dotnet ef migrations add InitialCreate -o Data/Migrations`
+ - Creating the database: `dotnet ef database update`
 
