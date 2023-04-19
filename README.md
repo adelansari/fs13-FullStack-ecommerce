@@ -49,4 +49,10 @@ Running the backend app:
 - Setting up react router: `npm install react-router-dom`
 - Adding Nav Links to header and styling
 - Fetching data with axios: `npm install axios` on component load
+- Adding a product detail page + styling
+
+
+
+## Creating a debugger
+Here I will try to create a debugger and implement error handling
 

@@ -10,11 +10,7 @@ using Microsoft.EntityFrameworkCore;
 // This class inherits from ControllerBase
 namespace backend.Controllers
 {
-    // ApiController attribute specifies that this class is an API controller
-    [ApiController]
-    // Route attribute specifies the URL path for this controller
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    public class ProductsController : BaseApiController
     {
         // Constructor that takes in a StoreContext object --dependency injection
         private readonly StoreContext _context;
