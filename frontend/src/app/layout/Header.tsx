@@ -1,5 +1,5 @@
 import { ShoppingCart } from "@mui/icons-material";
-import { AppBar, Avatar, Badge, IconButton, List, ListItem, Switch, Toolbar, Typography, styled, } from "@mui/material";
+import { AppBar, Avatar, Badge, Box, IconButton, List, ListItem, Switch, Toolbar, Typography, styled, } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
 interface Props {
@@ -23,7 +23,7 @@ const navStyles = {
   textDecoration: 'none',
   typography: 'h6',
   '&:hover': {
-    color: 'grey.500'
+    color: 'success.light'
   },
   '&.active': {
     color: 'text.secondary'
@@ -83,68 +83,76 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 export default function Header({ handleThemeChange, darkMode }: Props) {
   return (
     <AppBar position='static' sx={{ mb: 4, bgcolor: '#3d3c3c' }}>
-      <Toolbar>
-        <Avatar
-          sx={{
-            bgcolor: 'warning.dark',
-            width: 'fit-content',
-            height: 'fit-content',
-            marginRight: 2,
-            boxShadow: '0px 0px 10px rgba(255, 152, 0, 0.5)',
-            padding: '5px',
-          }}
-          variant="square"
-        >
-          <Typography
-            variant="h6"
-            noWrap
-            component={NavLink}
-            to='/'
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+        <Box display='flex' alignItems='center'>
+          <Avatar
             sx={{
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-              margin: '0px 5px',
+              bgcolor: 'warning.dark',
+              width: 'fit-content',
+              height: 'fit-content',
+              marginRight: 2,
+              boxShadow: '0px 0px 10px rgba(255, 152, 0, 0.5)',
+              padding: '5px',
             }}
+            variant="square"
           >
-            GoShop
-          </Typography>
+            <Typography
+              variant="h6"
+              noWrap
+              component={NavLink}
+              to='/'
+              sx={{
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+                margin: '0px 5px',
+                '&:hover': {
+                  color: 'yellow'
+                },
+              }}
+            >
+              GoShop
+            </Typography>
         </Avatar>
-        {<MaterialUISwitch sx={{ m: 1 }} onChange={handleThemeChange} />}
-        {/* <Switch  checked={darkMode} /> */}
+          {<MaterialUISwitch sx={{ m: 1 }} onChange={handleThemeChange} />}
+          {/* <Switch  checked={darkMode} /> */}
+        </Box>
+
         <List sx={{ display: 'flex' }}>
           {midLinks.map(({ title, path }) => (
             <ListItem
               component={NavLink}
               to={path}
               key={path}
-              sx={{ color: 'inherit', typography: 'h6' }}
+              sx={navStyles}
             >
               {title.toUpperCase()}
             </ListItem>
           ))}
         </List>
 
-        <IconButton size='large' edge='start' color='inherit' sx={{ mr: 2 }}>
-          <Badge badgeContent='4' color="secondary">
-            <ShoppingCart />
-          </Badge>
-        </IconButton>
-
-        <List sx={{ display: 'flex' }}>
-          {rightLinks.map(({ title, path }) => (
-            <ListItem
-              component={NavLink}
-              to={path}
-              key={path}
-              sx={{ color: 'inherit', typography: 'h6' }}
-            >
-              {title.toUpperCase()}
-            </ListItem>
-          ))}
-        </List>
+        <Box display='flex' alignItems='center'>
+          <IconButton size='large' edge='start' color='inherit' sx={{ mr: 2 }}>
+            <Badge badgeContent='4' color="secondary">
+              <ShoppingCart />
+            </Badge>
+          </IconButton>
+          <List sx={{ display: 'flex' }}>
+            {rightLinks.map(({ title, path }) => (
+              <ListItem
+                component={NavLink}
+                to={path}
+                key={path}
+                sx={navStyles}
+              >
+                {title.toUpperCase()}
+              </ListItem>
+            ))}
+          </List>
+        </Box>
       </Toolbar>
     </AppBar>
   )
