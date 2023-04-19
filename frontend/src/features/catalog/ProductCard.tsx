@@ -6,7 +6,6 @@ interface Props {
     product: Product;
 }
 
-
 export default function ProductCard({ product }: Props) {
     const [open, setOpen] = useState(false);
 
@@ -38,7 +37,7 @@ export default function ProductCard({ product }: Props) {
                     }}
                 />
                 <CardMedia
-                    sx={{ height: 140, backgroundSize: 'contain', bgcolor: 'text.primary', cursor: 'pointer' }}
+                    sx={{ height: 140, backgroundSize: 'contain', bgcolor: '#9ab3b3', cursor: 'pointer' }}
                     image={product.pictureUrl}
                     title={product.name}
                     onClick={handleClickOpen}
@@ -65,10 +64,10 @@ export default function ProductCard({ product }: Props) {
                         variant="contained"
                         size="small"
                         sx={{
-                            backgroundColor: 'primary.main',
+                            backgroundColor: 'primary.dark',
                             color: 'white',
                             '&:hover': {
-                                backgroundColor: 'primary.dark',
+                                backgroundColor: 'success.dark',
                                 boxShadow: 'none'
                             },
                             '&:active': {
@@ -100,7 +99,7 @@ export default function ProductCard({ product }: Props) {
 
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>{product.name}</DialogTitle>
-                <DialogContent>
+                <DialogContent style={{ backgroundColor: '#eaeaea' }}>
                     <DialogContentText>
                         <img src={product.pictureUrl} alt={product.name} style={{ width: '100%' }} />
                     </DialogContentText>
