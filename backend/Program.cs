@@ -16,6 +16,7 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -29,6 +30,15 @@ if (app.Environment.IsDevelopment())
     // specifying the Swagger JSON endpoint.
     app.UseSwaggerUI();
 }
+
+// This method configures Cross-Origin Resource Sharing (CORS) between backend and frontend
+app.UseCors(opt =>
+{
+    opt.AllowAnyHeader()
+        .AllowAnyMethod()
+        // Allow requests from:
+        .WithOrigins("http://localhost:3000");
+});
 
 // Enable authorization middleware
 app.UseAuthorization();
