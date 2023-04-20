@@ -16,12 +16,12 @@ const StyledDialogActions = styled(DialogActions)({
 export default function ProductCard({ product }: Props) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    // const {setBasket} = useStoreContext();
+    const {setBasket} = useStoreContext();
 
     function handleAddItem(productId: number, quantity = 1) {
         setLoading(true);
         agent.Basket.addItem(productId, quantity)
-            // .then(basket => setBasket(basket))
+            .then(basket => setBasket(basket))
             .catch(error => console.log(error))
             .finally(() => setLoading(false))
     };
