@@ -56,3 +56,5 @@ Running the backend app:
 ## Creating a debugger
 Here I will try to create a debugger and implement error handling
 
+- Adding toast notification: `npm install --save react-toastify`
+
