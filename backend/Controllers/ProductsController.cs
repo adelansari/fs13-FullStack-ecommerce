@@ -43,7 +43,11 @@ namespace backend.Controllers
         // GetProduct method returns a single product by its ID
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            return await _context.Products.FindAsync(id);
+            var product = await _context.Products.FindAsync(id);
+
+            if (product == null) return NotFound();
+
+            return product;
         }
     }
 }
