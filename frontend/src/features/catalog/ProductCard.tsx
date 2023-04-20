@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import agent from "../../app/api/agent";
 import { LoadingButton } from "@mui/lab";
 import { useStoreContext } from "../../app/context/StoreContext";
+import { currencyFormat } from "../../app/util/util";
 
 interface Props {
     product: Product;
@@ -70,7 +71,7 @@ export default function ProductCard({ product }: Props) {
                                 animationIterationCount: 'infinite'
                             }}
                         >
-                            €{(product.price / 100).toFixed(2)}
+                            {currencyFormat(product.price)}
                         </span>
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
