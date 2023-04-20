@@ -2,6 +2,8 @@ import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, 
 import { Product } from "../../app/models/product";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import agent from "../../app/api/agent";
+import { LoadingButton } from "@mui/lab";
 
 interface Props {
     product: Product;
@@ -13,6 +15,16 @@ const StyledDialogActions = styled(DialogActions)({
 
 export default function ProductCard({ product }: Props) {
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    // const {setBasket} = useStoreContext();
+
+    function handleAddItem(productId: number, quantity = 1) {
+        setLoading(true);
+        agent.Basket.addItem(productId, quantity)
+            // .then(basket => setBasket(basket))
+            .catch(error => console.log(error))
+            .finally(() => setLoading(false))
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -65,7 +77,9 @@ export default function ProductCard({ product }: Props) {
                     </Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Button
+                    <LoadingButton
+                        loading={loading}
+                        onClick={() => handleAddItem(product.id)} 
                         variant="contained"
                         size="small"
                         sx={{
@@ -81,7 +95,7 @@ export default function ProductCard({ product }: Props) {
                         }}
                     >
                         Add to Cart
-                    </Button>
+                    </LoadingButton>
                     <Button
                         variant="contained"
                         size="small"

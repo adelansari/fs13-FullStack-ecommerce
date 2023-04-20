@@ -38,6 +38,7 @@ app.UseCors(opt =>
 {
     opt.AllowAnyHeader()
         .AllowAnyMethod()
+        .AllowCredentials()  // allowing client to pass cookie backward and forward from the server
         // Allow requests from:
         .WithOrigins("http://localhost:3000");
 });

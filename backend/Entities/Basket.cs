@@ -2,16 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace backend.Entities
 {
-    using System.Collections.Generic;
     public class Basket
     {
         public int Id { get; set; }
-        // keep track of user who aren't signed 
-        public string BuyerId { get; set; }
-        public List<BasketItem> Items { get; set; } = new List<BasketItem>(); // to prevent list undefined scenarios
+        public string BuyerId { get; set; }  // keeps track of users who aren't loggd in
+        public List<BasketItem> Items { get; set; } = new List<BasketItem>();
 
         public void AddItem(Product product, int quantity)
         {
