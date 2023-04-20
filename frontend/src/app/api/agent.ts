@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { router } from "../router/Routes";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500))
 
@@ -30,7 +31,7 @@ axios.interceptors.response.use(async response => {
             toast.error(data.title);
             break;
         case 500:
-            toast.error(data.title);
+            router.navigate('/server-error', {state: {error: data}});
             break;
         default:
             break;

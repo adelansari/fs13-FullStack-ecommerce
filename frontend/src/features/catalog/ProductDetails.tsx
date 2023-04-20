@@ -2,8 +2,8 @@ import { Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, T
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Product } from "../../app/models/product";
-import axios from "axios";
 import agent from "../../app/api/agent";
+import NotFound from "../../app/errors/NotFound";
 
 const ProductImage = styled('img')({
     maxWidth: '100%',
@@ -45,7 +45,7 @@ export default function ProductDetails() {
 
     if (loading) return <h3>Loading...</h3>
 
-    if (!product) return <h3>Couldn't find the product</h3>
+    if (!product) return <NotFound />
 
 
     return (
