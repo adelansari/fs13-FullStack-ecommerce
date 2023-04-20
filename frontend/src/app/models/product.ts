@@ -6,7 +6,7 @@ export interface Product {
   price: number,
   company: string,
   category?: string,
-  quantityInStock?: number
+  quantityRemains?: number
 }
 
 export interface ProductParams {
