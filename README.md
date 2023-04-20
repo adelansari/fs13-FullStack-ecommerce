@@ -32,6 +32,7 @@ Setting up:
  - Migrate and seed the data on app startup using `Program` class by creating a scope (removing old db using `dotnet ef database drop`)
  - Creating product controller for api with the following end points: `api/products` and `api/products/{id}`
  - Creating the .gitignore using `dotnet new gitignore`
+ - Add entity for basket/shopping cart creation and then `dotnet ef migrations add BasketEntityAdded`
 
 Running the backend app:
 - `dotnet run`
