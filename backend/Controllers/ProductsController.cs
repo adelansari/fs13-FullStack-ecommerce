@@ -32,7 +32,7 @@ namespace backend.Controllers
             var query = _context.Products
                 .Sort(productParams.OrderBy) // Sort the products based on the specified order
                 .Search(productParams.SearchTerm) // Search for products based on the specified search term
-                .Filter(productParams.Brands, productParams.Types) // Filter products based on the specified brands and types
+                .Filter(productParams.Companies, productParams.Categories) // Filter products based on the specified companies and categories
                 .AsQueryable();
 
             // Create a paginated list of products using the constructed query
@@ -78,10 +78,13 @@ namespace backend.Controllers
         [HttpGet("filters")]
         public async Task<IActionResult> GetFilters()
         {
-            var brands = await _context.Products.Select(p => p.Company).Distinct().ToListAsync();
-            var types = await _context.Products.Select(p => p.Category).Distinct().ToListAsync();
+            // Retrieve a list of distinct product companies from the database
+            var companies = await _context.Products.Select(p => p.Company).Distinct().ToListAsync();
+            // Retrieve a list of distinct product categories from the database
+            var categories = await _context.Products.Select(p => p.Category).Distinct().ToListAsync();
 
-            return Ok(new { brands, types });
+            // Return an anonymous object as the result of the action method
+            return Ok(new { companies, categories });
         }
 
         // Initial code:

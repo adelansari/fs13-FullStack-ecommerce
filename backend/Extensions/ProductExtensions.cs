@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Entities;
 
-namespace backend.Extentions
+namespace backend.Extensions
 {
-    public class ProductExtentions
+    public static class ProductExtensions
     {
         public static IQueryable<Product> Sort(this IQueryable<Product> query, string orderBy)
         {
@@ -31,18 +31,18 @@ namespace backend.Extentions
             return query.Where(p => p.Name.ToLower().Contains(lowerCaseSearchTerm));
         }
 
-        public static IQueryable<Product> Filter(this IQueryable<Product> query, string brand, string type)
+        public static IQueryable<Product> Filter(this IQueryable<Product> query, string company, string type)
         {
-            var brandList = new List<string>();
+            var companyList = new List<string>();
             var typeList = new List<string>();
 
-            if (!string.IsNullOrEmpty(brand))
-                brandList.AddRange(brand.ToLower().Split(",").ToList());
+            if (!string.IsNullOrEmpty(company))
+                companyList.AddRange(company.ToLower().Split(",").ToList());
 
             if (!string.IsNullOrEmpty(type))
                 typeList.AddRange(type.ToLower().Split(",").ToList());
 
-            query = query.Where(p => brandList.Count == 0 || brandList.Contains(p.Company.ToLower()));
+            query = query.Where(p => companyList.Count == 0 || companyList.Contains(p.Company.ToLower()));
 
             query = query.Where(p => typeList.Count == 0 || typeList.Contains(p.Category.ToLower()));
 

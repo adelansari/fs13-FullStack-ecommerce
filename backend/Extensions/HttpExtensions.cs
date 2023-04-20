@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using backend.RequestHelpers;
 
-namespace backend.Extentions
+namespace backend.Extensions
 {
     public static class HttpExtensions
     {
