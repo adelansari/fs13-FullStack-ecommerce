@@ -31,20 +31,20 @@ namespace backend.Extensions
             return query.Where(p => p.Name.ToLower().Contains(lowerCaseSearchTerm));
         }
 
-        public static IQueryable<Product> Filter(this IQueryable<Product> query, string company, string type)
+        public static IQueryable<Product> Filter(this IQueryable<Product> query, string company, string category)
         {
             var companyList = new List<string>();
-            var typeList = new List<string>();
+            var categoryList = new List<string>();
 
             if (!string.IsNullOrEmpty(company))
                 companyList.AddRange(company.ToLower().Split(",").ToList());
 
-            if (!string.IsNullOrEmpty(type))
-                typeList.AddRange(type.ToLower().Split(",").ToList());
+            if (!string.IsNullOrEmpty(category))
+                categoryList.AddRange(category.ToLower().Split(",").ToList());
 
             query = query.Where(p => companyList.Count == 0 || companyList.Contains(p.Company.ToLower()));
 
-            query = query.Where(p => typeList.Count == 0 || typeList.Contains(p.Category.ToLower()));
+            query = query.Where(p => categoryList.Count == 0 || categoryList.Contains(p.Category.ToLower()));
 
             return query;
         }

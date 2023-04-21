@@ -1,4 +1,4 @@
-import { Grid, Paper } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid, Paper, Typography } from "@mui/material";
 import { useEffect } from "react";
 import AppPagination from "../../app/components/AppPagination";
 import CheckboxButtons from "../../app/components/CheckboxButtons";
@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { fetchFilters, fetchProductsAsync, productSelectors, setPageNumber, setProductParams } from "./catalogSlice";
 import ProductList from "./ProductList";
 import ProductSearch from "./ProductSearch";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const sortOptions = [
     { value: "name", label: "Alphabetical" },
@@ -44,24 +45,41 @@ export default function Catalog() {
     return (
         <Grid container columnSpacing={4}>
             <Grid item xs={9}>
-                <ProductList products={products} />
+                <Grid item xs={12}>
+                    <ProductList products={products} />
+                </Grid>
+                <Grid item xs={12} sx={{ mb: 2 }}>
+                    {metaData && <AppPagination metaData={metaData} onPageChange={(page: number) => dispatch(setPageNumber({ pageNumber: page }))} />}
+                </Grid>
             </Grid>
             <Grid item xs={3}>
                 <Paper sx={{ mb: 2 }}>
                     <ProductSearch />
                 </Paper>
-                <Paper sx={{ p: 2, mb: 2 }}>
-                    <RadioButtonGroup selectedValue={productParams.orderBy} options={sortOptions} onChange={(e) => dispatch(setProductParams({ orderBy: e.target.value }))} />
-                </Paper>
-                <Paper sx={{ p: 2, mb: 2 }}>
-                    <CheckboxButtons items={companies} checked={productParams.companies} onChange={(checkedItems: string[]) => dispatch(setProductParams({ companies: checkedItems }))} />
-                </Paper>
-                <Paper sx={{ p: 2 }}>
-                    <CheckboxButtons items={categories} checked={productParams.categories} onChange={(checkedItems: string[]) => dispatch(setProductParams({ categories: checkedItems }))} />
-                </Paper>
-            </Grid>
-            <Grid item xs={9} sx={{ mb: 2 }}>
-                {metaData && <AppPagination metaData={metaData} onPageChange={(page: number) => dispatch(setPageNumber({ pageNumber: page }))} />}
+                <Accordion>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography variant="button">Filters</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <RadioButtonGroup selectedValue={productParams.orderBy} options={sortOptions} onChange={(e) => dispatch(setProductParams({ orderBy: e.target.value }))} />
+                    </AccordionDetails>
+                </Accordion>
+                <Accordion>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography variant="button">Companies</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <CheckboxButtons items={companies} checked={productParams.companies} onChange={(checkedItems: string[]) => dispatch(setProductParams({ companies: checkedItems }))} />
+                    </AccordionDetails>
+                </Accordion>
+                <Accordion>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography variant="button">Categories</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <CheckboxButtons items={categories} checked={productParams.categories} onChange={(checkedItems: string[]) => dispatch(setProductParams({ categories: checkedItems }))} />
+                    </AccordionDetails>
+                </Accordion>
             </Grid>
         </Grid>
     );

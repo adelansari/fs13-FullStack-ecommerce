@@ -54,7 +54,7 @@ export default function ProductCard({ product }: Props) {
                     onClick={handleClickOpen}
                 />
                 <CardContent>
-                    <Typography gutterBottom color='secondary' variant="h5">
+                    <Typography gutterBottom color='warning.dark' variant="h5">
                         <span
                             style={{
                                 animationName: '$shine',
@@ -67,7 +67,7 @@ export default function ProductCard({ product }: Props) {
                         </span>
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        {product.company} / {product.category}
+                        category: <b>{product.category}</b>
                     </Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'space-between', alignItems: 'center' }}>

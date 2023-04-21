@@ -67,7 +67,7 @@ export const fetchFilters = createAsyncThunk(
 function initParams(): ProductParams {
     return {
         pageNumber: 1,
-        pageSize: 6,
+        pageSize: 6,  // to change how many products are displayed in the page
         orderBy: 'name',
         companies: [],
         categories: []
