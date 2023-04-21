@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid, Paper, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Grid, Paper, Typography } from "@mui/material";
 import { useEffect } from "react";
 import AppPagination from "../../app/components/AppPagination";
 import CheckboxButtons from "../../app/components/CheckboxButtons";
@@ -42,6 +42,7 @@ export default function Catalog() {
     // }
 
     if (!filtersLoaded) return <LoadingComponent message="Loading products..." />;
+
     return (
         <Grid container columnSpacing={4}>
             <Grid item xs={9}>

@@ -54,7 +54,7 @@ export default function ProductCard({ product }: Props) {
                     onClick={handleClickOpen}
                 />
                 <CardContent>
-                    <Typography gutterBottom color='warning.dark' variant="h5">
+                    <Typography gutterBottom color='text.main' variant="h5">
                         <span
                             style={{
                                 animationName: '$shine',
