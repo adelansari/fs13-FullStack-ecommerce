@@ -1,5 +1,6 @@
 using backend.Data;
 using backend.Entities;
+using backend.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,15 +20,17 @@ builder.Services.AddDbContext<StoreContext>(opt =>
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddCors();
-builder.Services.AddIdentityCore<User>(opt => 
-{
-    opt.User.RequireUniqueEmail = true;
-})
+builder.Services
+    .AddIdentityCore<User>(opt =>
+    {
+        opt.User.RequireUniqueEmail = true;
+    })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<StoreContext>();
 
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 
@@ -49,7 +52,7 @@ app.UseCors(opt =>
 {
     opt.AllowAnyHeader()
         .AllowAnyMethod()
-        .AllowCredentials()  // allowing client to pass cookie backward and forward from the server
+        .AllowCredentials() // allowing client to pass cookie backward and forward from the server
         // Allow requests from:
         .WithOrigins("http://localhost:3000");
 });
