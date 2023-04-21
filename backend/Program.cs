@@ -1,8 +1,11 @@
+using System.Text;
 using backend.Data;
 using backend.Entities;
 using backend.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 // Create a new web application builder
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +31,21 @@ builder.Services
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<StoreContext>();
 
-builder.Services.AddAuthentication();
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opt =>
+    {
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:TokenKey"])
+            )
+        };
+    });
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<TokenService>();
 
