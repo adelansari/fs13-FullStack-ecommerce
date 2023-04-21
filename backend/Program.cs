@@ -1,4 +1,6 @@
 using backend.Data;
+using backend.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 // Create a new web application builder
@@ -17,6 +19,12 @@ builder.Services.AddDbContext<StoreContext>(opt =>
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddCors();
+builder.Services.AddIdentityCore<User>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<StoreContext>();
+
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -53,14 +61,15 @@ var scope = app.Services.CreateScope();
 
 // Get database context and logger services
 var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
+var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 try
 {
     // Apply any pending migrations to the database
-    context.Database.Migrate();
+    await context.Database.MigrateAsync();
 
     // Seed the database with initial data
-    DbInitializer.Initialize(context);
+    await DbInitializer.Initialize(context, userManager);
 }
 catch (Exception ex)
 {

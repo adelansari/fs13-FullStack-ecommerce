@@ -59,3 +59,8 @@ Here I will try to create a debugger and implement error handling
 
 - Adding toast notification: `npm install --save react-toastify`
 
+
+## Setting up identity
+- Installing from NuGet Gallery: `Microsoft.AspNetCore.Authentication.JwtBearer` and `Microsoft.AspNetCore.Identity.EntityFrameworkCore`
+
+
