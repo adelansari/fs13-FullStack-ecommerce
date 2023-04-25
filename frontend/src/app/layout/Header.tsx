@@ -12,6 +12,7 @@ const midLinks = [
     { title: "catalog", path: "/catalog" },
     { title: "about", path: "/about" },
     { title: "contact", path: "/contact" },
+    { title: "budget", path: "/budget" },
 ];
 
 const rightLinks = [
