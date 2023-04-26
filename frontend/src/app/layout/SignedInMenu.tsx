@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/configureStore";
 import { signOut } from "../../features/account/accountSlice";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { clearBasket } from "../../features/basket/basketSlice";
 
 export default function SignedInMenu() {
     const dispatch = useAppDispatch();
@@ -29,7 +30,14 @@ export default function SignedInMenu() {
                 <MenuItem divider onClick={handleClose}>
                     My orders
                 </MenuItem>
-                <MenuItem onClick={() => dispatch(signOut())}>Logout</MenuItem>
+                <MenuItem
+                    onClick={() => {
+                        dispatch(signOut());
+                        dispatch(clearBasket());
+                    }}
+                >
+                    Logout
+                </MenuItem>
             </Menu>
         </>
     );
