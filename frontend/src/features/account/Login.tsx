@@ -20,12 +20,12 @@ export default function Login() {
         handleSubmit,
         formState: { isSubmitting, errors, isValid },
     } = useForm({
-        mode: 'onTouched'
+        mode: "onTouched",
     });
 
     async function submitForm(data: FieldValues) {
         await dispatch(signInUser(data));
-        navigate('/catalog')
+        navigate("/catalog");
     }
 
     const theme = createTheme();
@@ -40,20 +40,30 @@ export default function Login() {
                     Sign in
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit(submitForm)} noValidate sx={{ mt: 1 }}>
-                    <TextField color="warning" margin="normal" fullWidth label="Username" autoComplete="username" autoFocus {...register("username", { required: "Please input a username." })} error={!!errors.username} helperText={errors?.username?.message as string} />
                     <TextField
                         color="warning"
                         margin="normal"
                         fullWidth
+                        label="Username"
+                        autoComplete="username"
+                        autoFocus
+                        {...register("username", { required: "Please input a username." })}
+                        error={!!errors.username}
+                        helperText={errors?.username?.message as string}
+                    />
+                    <TextField
+                        color="warning"
+                        margin="normal"
+                        fullWidth
+                        required
                         label="Password"
                         type="password"
                         autoComplete="current-password"
                         {...register("password", { required: "Please input a password." })}
                         error={!!errors.password}
                         helperText={errors?.password?.message as string}
-                        
                     />
-                    <LoadingButton loading={isSubmitting} disabled={!isValid} color="warning" type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                    <LoadingButton disabled={!isValid} loading={isSubmitting} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                         Sign In
                     </LoadingButton>
                     <Grid container>
