@@ -54,13 +54,50 @@ Running the backend app:
 
 
 
-## Creating a debugger
+### Creating a debugger
 Here I will try to create a debugger and implement error handling
 
 - Adding toast notification: `npm install --save react-toastify`
 
 
-## Setting up identity
+### Setting up identity
 - Installing from NuGet Gallery: `Microsoft.AspNetCore.Authentication.JwtBearer` and `Microsoft.AspNetCore.Identity.EntityFrameworkCore`
 
+## API endpoints
 
+### Account
+| HTTP Verb | Endpoint                   |
+| :-------- | :------------------------- |
+| POST      | `/api/Account/login`       |
+| POST      | `/api/Account/register`    |
+| GET       | `/api/Account/currentUser` |
+
+### Basket
+| HTTP Verb | Endpoint      |
+| :-------- | :------------ |
+| GET       | `/api/Basket` |
+| POST      | `/api/Basket` |
+| DELETE    | `/api/Basket` |
+
+### Buggy
+| HTTP Verb | Endpoint                      |
+| :--------- | :---------------------------- |
+| GET       | `/api/Buggy/not-found`        |
+| GET       | `/api/Buggy/bad-request`      |
+| GET       | `/api/Buggy/unauthorised`     |
+| GET       | `/api/Buggy/validation-error` |
+| GET       | `/api/Buggy/server-error`     |
+
+### Orders
+| HTTP Verb | Endpoint           |
+| :-------- | :----------------- |
+| GET       | `/api/Orders`      |
+| POST      | `/api/Orders`      |
+| GET       | `/api/Orders/{id}` |
+
+### Products
+| HTTP Verb | Endpoint                |
+| :-------- | :---------------------- |
+| GET       | `/api/Products`         |
+| GET       | `/api/Products/{id}`    |
+| GET       | `/api/Products/filters` |
