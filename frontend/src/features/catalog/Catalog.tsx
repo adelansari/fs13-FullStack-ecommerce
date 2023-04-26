@@ -11,9 +11,10 @@ import ProductSearch from "./ProductSearch";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const sortOptions = [
-    { value: "name", label: "Alphabetical" },
+    { value: "nameAsc", label: "Alphabetical - Asc" },
+    { value: "nameDesc", label: "Alphabetical - Dsc" },
     { value: "priceDesc", label: "Price - High to low" },
-    { value: "price", label: "Price - Low to high" },
+    { value: "priceAsc", label: "Price - Low to high" },
 ];
 
 export default function Catalog() {
