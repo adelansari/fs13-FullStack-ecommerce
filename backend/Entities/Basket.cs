@@ -5,6 +5,8 @@ namespace backend.Entities
         public int Id { get; set; }
         public string BuyerId { get; set; }  // keeps track of users who aren't loggd in
         public List<BasketItem> Items { get; set; } = new List<BasketItem>();
+        public string PaymentIntentId { get; set; }
+        public string ClientSecret { get; set; }
 
         public void AddItem(Product product, int quantity)
         {
