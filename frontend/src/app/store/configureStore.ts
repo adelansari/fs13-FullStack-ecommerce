@@ -4,6 +4,7 @@ import { basketSlice } from "../../features/basket/basketSlice";
 import { catalogSlice } from "../../features/catalog/catalogSlice";
 import { counterSlice } from "../../features/contact/counterSlice";
 import budgetReducer from "../../features/budget/budgetSlice";
+import { accountSlice } from "../../features/account/accountSlice";
 
 // export function configureStore() {
 //     return createStore(counterReducer);
@@ -15,6 +16,7 @@ export const store = configureStore({
         basket: basketSlice.reducer,
         catalog: catalogSlice.reducer,
         budget: budgetReducer,
+        account: accountSlice.reducer,
     }
 })
 
