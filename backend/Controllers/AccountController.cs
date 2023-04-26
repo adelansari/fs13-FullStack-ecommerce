@@ -20,7 +20,11 @@ namespace backend.Controllers
         private readonly TokenService _tokenService;
         private readonly StoreContext _context;
 
-        public AccountController(UserManager<User> userManager, TokenService tokenService, StoreContext context)
+        public AccountController(
+            UserManager<User> userManager,
+            TokenService tokenService,
+            StoreContext context
+        )
         {
             _context = context;
             _userManager = userManager;
@@ -40,7 +44,8 @@ namespace backend.Controllers
 
             if (anonBasket != null)
             {
-                if (userBasket != null) _context.Baskets.Remove(userBasket);
+                if (userBasket != null)
+                    _context.Baskets.Remove(userBasket);
                 anonBasket.BuyerId = user.UserName;
                 Response.Cookies.Delete("buyerId");
                 await _context.SaveChangesAsync();
@@ -51,7 +56,8 @@ namespace backend.Controllers
                 Email = user.Email,
                 Username = user.UserName,
                 Token = await _tokenService.GenerateToken(user),
-                Basket = anonBasket != null ? anonBasket.MapBasketToDto() : userBasket?.MapBasketToDto()
+                Basket =
+                    anonBasket != null ? anonBasket.MapBasketToDto() : userBasket?.MapBasketToDto()
             };
         }
 
@@ -83,12 +89,16 @@ namespace backend.Controllers
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
+            var userBasket = await RetrieveBasket(User.Identity.Name);
+
             return new UserDto
             {
                 Email = user.Email,
                 Token = await _tokenService.GenerateToken(user),
+                Basket = userBasket?.MapBasketToDto()
             };
         }
+
         private async Task<Basket> RetrieveBasket(string buyerId)
         {
             if (string.IsNullOrEmpty(buyerId))
