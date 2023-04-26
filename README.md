@@ -66,11 +66,12 @@ Here I will try to create a debugger and implement error handling
 ## API endpoints
 
 ### Account
-| HTTP Verb | Endpoint                   |
-| :-------- | :------------------------- |
-| POST      | `/api/Account/login`       |
-| POST      | `/api/Account/register`    |
-| GET       | `/api/Account/currentUser` |
+| HTTP Verb | Endpoint                    |
+| :-------- | :-------------------------- |
+| POST      | `/api/Account/login`        |
+| POST      | `/api/Account/register`     |
+| GET       | `/api/Account/currentUser`  |
+| GET       | `/api/Account/savedAddress` |
 
 ### Basket
 | HTTP Verb | Endpoint      |

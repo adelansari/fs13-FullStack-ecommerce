@@ -103,6 +103,7 @@ namespace backend.Controllers
                     Country = orderDto.ShippingAddress.Country
                 };
                 user.Address = address;
+                // _context.Update(user);
             }
 
             var result = await _context.SaveChangesAsync() > 0;
