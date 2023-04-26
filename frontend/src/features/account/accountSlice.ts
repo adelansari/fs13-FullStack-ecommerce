@@ -3,7 +3,6 @@ import { User } from "../../app/models/user";
 import { FieldValues } from "react-hook-form";
 import agent from "../../app/api/agent";
 import { router } from "../../app/router/Routes";
-import { RootState } from "../../app/store/configureStore";
 import { toast } from "react-toastify";
 
 interface AccountState {

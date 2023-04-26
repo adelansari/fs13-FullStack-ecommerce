@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
             {path: 'basket', element: <BasketPage />},
             {path: 'checkout', element: <CheckoutPage />},
             {path: 'login', element: <Login />},
-            {path: 'register', element: <Register />},
+            {path: 'signup', element: <Register />},
             {path: '*', element: <Navigate replace to='/not-found' />}
         ]
     }
