@@ -8,6 +8,7 @@ import {
     DialogTitle,
     Divider,
     Grid,
+    Modal,
     Table,
     TableBody,
     TableCell,
@@ -62,7 +63,8 @@ const CubeContainer = styled("div")({
     height: "300px",
     position: "relative",
     transformStyle: "preserve-3d",
-    animation: "spin 10s infinite linear",
+    animation: "spin 20s infinite linear",
+    cursor: "pointer",
 });
 
 const CubeFace = styled("div")(({ theme }) => ({
@@ -94,16 +96,17 @@ const faces = [
 const GlobalStyle = createGlobalStyle`
     @keyframes spin {
         from {
-            transform:  rotateZ(-5deg) rotateY(0deg);
+            transform:  rotateZ(0deg) rotateY(0deg);
         }
         to {
-            transform:  rotateZ(-5deg) rotateY(-1turn);
+            transform:  rotateZ(-1turn) rotateY(-1turn);
         }
     }
 `;
 
 const StyledDialogActions = styled(DialogActions)({
     justifyContent: "space-between",
+    cursor: "pointer",
 });
 
 export default function ProductDetails() {
@@ -115,6 +118,15 @@ export default function ProductDetails() {
     const [quantity, setQuantity] = useState(0);
     const item = basket?.items.find((i) => i.productId === product?.id);
     const [open, setOpen] = useState(false); // for image click event
+    const [openModal, setOpenModal] = useState(false); // State for modal
+
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -160,98 +172,110 @@ export default function ProductDetails() {
     if (!product) return <NotFound />;
 
     return (
-        <Grid container spacing={6} alignItems="center">
-            <ProductInfo item xs={12} md={6}>
-                <NeonTableContainer>
-                    <Box marginX={2}>
-                        <Box marginBottom={2} />
-                        <Table>
-                            <TableBody sx={{ fontSize: "1.1em" }}>
-                                <TableRow>
-                                    <NeonTableCell colSpan={2}>
-                                        <Typography variant="h3">{product.name}</Typography>
-                                        <Divider sx={{ mb: 2 }} />
-                                        <AnimatedTypography>€{(product.price / 100).toFixed(2)}</AnimatedTypography>
-                                    </NeonTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <BoldNeonTableCell>Name</BoldNeonTableCell>
-                                    <NeonTableCell>{product.name}</NeonTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <BoldNeonTableCell>Description</BoldNeonTableCell>
-                                    <NeonTableCell>{product.description}</NeonTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <BoldNeonTableCell>Category</BoldNeonTableCell>
-                                    <NeonTableCell>{product.category}</NeonTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <BoldNeonTableCell>Company</BoldNeonTableCell>
-                                    <NeonTableCell>{product.company}</NeonTableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <BoldNeonTableCell>Remaining</BoldNeonTableCell>
-                                    <NeonTableCell>{product.quantityRemains}</NeonTableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                        {/* Add spacing above TextField and LoadingButton */}
-                        <Box marginBottom={2} />
-                        <Grid container>
-                            <Grid item xs={6}>
-                                <TextField onChange={handleInputChange} variant={"outlined"} type={"number"} label={"Quantity in Cart"} fullWidth value={quantity} />
+        <>
+            <Grid container spacing={6} alignItems="center">
+                <ProductInfo item xs={12} md={6}>
+                    <NeonTableContainer>
+                        <Box marginX={2}>
+                            <Box marginBottom={2} />
+                            <Table>
+                                <TableBody sx={{ fontSize: "1.1em" }}>
+                                    <TableRow>
+                                        <NeonTableCell colSpan={2}>
+                                            <Typography variant="h3">{product.name}</Typography>
+                                            <Divider sx={{ mb: 2 }} />
+                                            <AnimatedTypography>€{(product.price / 100).toFixed(2)}</AnimatedTypography>
+                                        </NeonTableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <BoldNeonTableCell>Name</BoldNeonTableCell>
+                                        <NeonTableCell>{product.name}</NeonTableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <BoldNeonTableCell>Description</BoldNeonTableCell>
+                                        <NeonTableCell>{product.description}</NeonTableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <BoldNeonTableCell>Category</BoldNeonTableCell>
+                                        <NeonTableCell>{product.category}</NeonTableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <BoldNeonTableCell>Company</BoldNeonTableCell>
+                                        <NeonTableCell>{product.company}</NeonTableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <BoldNeonTableCell>Remaining</BoldNeonTableCell>
+                                        <NeonTableCell>{product.quantityRemains}</NeonTableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                            {/* Add spacing above TextField and LoadingButton */}
+                            <Box marginBottom={2} />
+                            <Grid container>
+                                <Grid item xs={6}>
+                                    <TextField onChange={handleInputChange} variant={"outlined"} type={"number"} label={"Quantity in Cart"} fullWidth value={quantity} />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <LoadingButton
+                                        disabled={item?.quantity === quantity || (!item && quantity === 0)}
+                                        loading={status.includes("pending")}
+                                        onClick={handleUpdateCart}
+                                        sx={{ height: "55px" }}
+                                        color={"warning"}
+                                        size={"large"}
+                                        variant={"contained"}
+                                        fullWidth
+                                    >
+                                        {item ? "Update Quantity" : "Add to Cart"}
+                                    </LoadingButton>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={6}>
-                                <LoadingButton
-                                    disabled={item?.quantity === quantity || (!item && quantity === 0)}
-                                    loading={status.includes("pending")}
-                                    onClick={handleUpdateCart}
-                                    sx={{ height: "55px" }}
-                                    color={"warning"}
-                                    size={"large"}
-                                    variant={"contained"}
-                                    fullWidth
-                                >
-                                    {item ? "Update Quantity" : "Add to Cart"}
-                                </LoadingButton>
-                            </Grid>
-                        </Grid>
-                        <Box marginBottom={2} />
-                    </Box>
-                </NeonTableContainer>
-            </ProductInfo>
-            <GlobalStyle />
-            {/* For the cube and product image */}
-            <Grid
-                item
-                xs={12}
-                md={6}
+                            <Box marginBottom={2} />
+                        </Box>
+                    </NeonTableContainer>
+                </ProductInfo>
+                <GlobalStyle />
+                {/* For the cube and product image */}
+                <Grid
+                    item
+                    xs={12}
+                    md={6}
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <CubeContainer ref={cubeRef} onClick={handleClickOpen}>
+                        {faces.map((_, i) => (
+                            <CubeFace key={i}>
+                                <CubeImage src={product.pictureUrl} alt={product.name} />
+                            </CubeFace>
+                        ))}
+                    </CubeContainer>
+                </Grid>
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>{product.name}</DialogTitle>
+                    <DialogContent style={{ backgroundColor: "#eaeaea" }}>
+                        <DialogContentText onClick={handleOpenModal}>
+                            <img src={product.pictureUrl} alt={product.name} style={{ width: "100%", cursor: "pointer" }} />
+                        </DialogContentText>
+                    </DialogContent>
+                    <StyledDialogActions>
+                        <Button onClick={handleClose}>Exit</Button>
+                    </StyledDialogActions>
+                </Dialog>
+            </Grid>
+            <Modal
+                open={openModal}
+                onClose={handleCloseModal}
                 sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    overflowY: "auto", // Enable vertical scrolling
+
                 }}
             >
-                <CubeContainer ref={cubeRef} onClick={handleClickOpen}>
-                    {faces.map((_, i) => (
-                        <CubeFace key={i}>
-                            <CubeImage src={product.pictureUrl} alt={product.name} />
-                        </CubeFace>
-                    ))}
-                </CubeContainer>
-            </Grid>
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>{product.name}</DialogTitle>
-                <DialogContent style={{ backgroundColor: "#eaeaea" }}>
-                    <DialogContentText>
-                        <img src={product.pictureUrl} alt={product.name} style={{ width: "100%" }} />
-                    </DialogContentText>
-                </DialogContent>
-                <StyledDialogActions>
-                    <Button onClick={handleClose}>Exit</Button>
-                </StyledDialogActions>
-            </Dialog>
-        </Grid>
+                <img src={product.pictureUrl} alt={product.name} style={{ width: "100%", cursor: "pointer" }} onClick={handleCloseModal}/>
+            </Modal>
+        </>
     );
 }

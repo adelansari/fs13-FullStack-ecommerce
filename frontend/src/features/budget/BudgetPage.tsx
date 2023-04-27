@@ -178,7 +178,7 @@ const BudgetPage = ({ title }: Props) => {
     // Render the component
     return (
         <Root>
-            <Typography variant="h4">{title}</Typography>
+            <Typography className="animatedTitle" variant="h6">{title}</Typography>
             <Grid container spacing={2}>
                 <Grid item xs={3}>
                     <StyledPaper>

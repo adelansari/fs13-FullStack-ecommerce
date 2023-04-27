@@ -1,21 +1,29 @@
-img:hover {
+.imageShake:hover {
   animation: shake 0.5s infinite;
 }
 
 @keyframes shake {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(1px, 1px) rotate(0deg);
   }
 
-  10%, 50%, 90% {
+  10%,
+  50%,
+  90% {
     transform: translate(-1px, -2px) rotate(-1deg);
   }
 
-  20%, 40%, 60%, 80% {
+  20%,
+  40%,
+  60%,
+  80% {
     transform: translate(-3px, 0px) rotate(1deg);
   }
 
-  30%, 70% {
+  30%,
+  70% {
     transform: translate(3px, 2px) rotate(0deg);
   }
 }
@@ -30,4 +38,50 @@ img:hover {
 
 .table-row td:hover {
   background-color: rgba(122, 157, 255, 0.663);
+}
+
+.animatedTitle {
+  width: auto;
+  height: 47px;
+  background: #92b901;
+  color: #ffffff;
+  position: relative;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 10px;
+  animation: animated_div 5s infinite;
+  border-radius: 5px;
+}
+
+@keyframes animated_div {
+  0% {
+    transform: rotate(0deg);
+    left: 0px;
+  }
+
+  25% {
+    transform: rotate(20deg);
+    left: 0px;
+  }
+
+  50% {
+    transform: rotate(0deg);
+    left: 500px;
+  }
+
+  55% {
+    transform: rotate(0deg);
+    left: 500px;
+  }
+
+  70% {
+    transform: rotate(0deg);
+    left: 500px;
+    background: #1ec7e6;
+  }
+
+  100% {
+    transform: rotate(-360deg);
+    left: 0px;
+  }
 }
