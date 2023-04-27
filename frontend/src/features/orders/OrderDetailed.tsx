@@ -23,10 +23,7 @@ export default function OrderDetailed({ order, setSelectedOrder }: Props) {
             </Box>
             <BasketTable items={order.orderItems as BasketItem[]} isBasket={false} />
             <Grid container>
-                <Grid item xs={6} />
-                <Grid item xs={6}>
-                    <BasketSummary subtotal={subtotal} />
-                </Grid>
+            <BasketSummary subtotal={subtotal} />
             </Grid>
         </>
     );

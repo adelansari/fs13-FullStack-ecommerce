@@ -1,5 +1,23 @@
-import { Box, Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, styled } from "@mui/material";
-import { useEffect, useState } from "react";
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Divider,
+    Grid,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableRow,
+    TextField,
+    Typography,
+    styled,
+} from "@mui/material";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
@@ -7,13 +25,15 @@ import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { addBasketItemAsync, removeBasketItemAsync } from "../basket/basketSlice";
 import { fetchProductAsync, productSelectors } from "./catalogSlice";
 import { LoadingButton } from "@mui/lab";
+import { createGlobalStyle } from "styled-components";
+import AnimatedTypography from "./AnimatedTypography";
 
-
-const ProductImage = styled("img")({
-    maxWidth: "100%",
-    maxHeight: "100%",
-    objectFit: "contain",
-});
+// // Product image component if I am not using the cube:
+// const ProductImage = styled("img")({
+//     maxWidth: "100%",
+//     maxHeight: "100%",
+//     objectFit: "contain",
+// });
 
 const ProductInfo = styled(Grid)(({ theme }) => ({
     [theme.breakpoints.down("sm")]: {
@@ -23,7 +43,7 @@ const ProductInfo = styled(Grid)(({ theme }) => ({
 
 const NeonTableContainer = styled(TableContainer)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
-    boxShadow: `0 0 2px ${theme.palette.primary.main}, 0 0 4px ${theme.palette.secondary.main}, 0 0 6px ${theme.palette.primary.main}, 0 0 8px ${theme.palette.primary.main}`,
+    boxShadow: `0 0 2px ${theme.palette.primary.main}, 0 0 4px ${theme.palette.warning.main}, 0 0 6px ${theme.palette.primary.main}, 0 0 8px ${theme.palette.primary.main}`,
 }));
 
 const NeonTableCell = styled(TableCell)(({ theme }) => ({
@@ -34,6 +54,58 @@ const BoldNeonTableCell = styled(NeonTableCell)({
     fontWeight: "bold",
 });
 
+// creating a 3D cube container so wrap the product image inside:
+const CubeContainer = styled("div")({
+    // perspective: "1000px",
+    // perspectiveOrigin: "180% 100%",
+    width: "300px",
+    height: "300px",
+    position: "relative",
+    transformStyle: "preserve-3d",
+    animation: "spin 10s infinite linear",
+});
+
+const CubeFace = styled("div")(({ theme }) => ({
+    position: "absolute",
+    width: "300px",
+    height: "300px",
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    backdropFilter: "blur(10px)", // Gives the glass effect
+    boxSizing: "border-box",
+}));
+
+const CubeImage = styled("img")({
+    objectFit: "cover",
+    width: "100%",
+    height: "100%",
+    borderRadius: "10px",
+});
+
+const faces = [
+    "rotateX(-90deg) translateZ(150px)",
+    "rotateY(90deg) translateZ(150px)",
+    "rotateY(180deg) translateZ(150px)",
+    "rotateY(-90deg) translateZ(150px)",
+    "rotateX(0deg) translateZ(150px)",
+    "rotateX(90deg) translateZ(150px)",
+];
+
+const GlobalStyle = createGlobalStyle`
+    @keyframes spin {
+        from {
+            transform:  rotateZ(-5deg) rotateY(0deg);
+        }
+        to {
+            transform:  rotateZ(-5deg) rotateY(-1turn);
+        }
+    }
+`;
+
+const StyledDialogActions = styled(DialogActions)({
+    justifyContent: "space-between",
+});
+
 export default function ProductDetails() {
     const { basket, status } = useAppSelector((state) => state.basket);
     const dispatch = useAppDispatch();
@@ -42,6 +114,27 @@ export default function ProductDetails() {
     const { status: productStatus } = useAppSelector((state) => state.catalog);
     const [quantity, setQuantity] = useState(0);
     const item = basket?.items.find((i) => i.productId === product?.id);
+    const [open, setOpen] = useState(false); // for image click event
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    // For the 3D cube:
+    const cubeRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (cubeRef.current) {
+            const cubeFaces = Array.from(cubeRef.current.children) as HTMLElement[];
+            cubeFaces.forEach((face, i) => {
+                face.style.transform = faces[i];
+            });
+        }
+    }, []);
 
     useEffect(() => {
         if (item) setQuantity(item.quantity);
@@ -78,9 +171,7 @@ export default function ProductDetails() {
                                     <NeonTableCell colSpan={2}>
                                         <Typography variant="h3">{product.name}</Typography>
                                         <Divider sx={{ mb: 2 }} />
-                                        <Typography variant="h4" color="secondary">
-                                            €{(product.price / 100).toFixed(2)}
-                                        </Typography>
+                                        <AnimatedTypography>€{(product.price / 100).toFixed(2)}</AnimatedTypography>
                                     </NeonTableCell>
                                 </TableRow>
                                 <TableRow>
@@ -130,9 +221,37 @@ export default function ProductDetails() {
                     </Box>
                 </NeonTableContainer>
             </ProductInfo>
-            <Grid item xs={12} md={6}>
-                <ProductImage src={product.pictureUrl} alt={product.name} />
+            <GlobalStyle />
+            {/* For the cube and product image */}
+            <Grid
+                item
+                xs={12}
+                md={6}
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <CubeContainer ref={cubeRef} onClick={handleClickOpen}>
+                    {faces.map((_, i) => (
+                        <CubeFace key={i}>
+                            <CubeImage src={product.pictureUrl} alt={product.name} />
+                        </CubeFace>
+                    ))}
+                </CubeContainer>
             </Grid>
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>{product.name}</DialogTitle>
+                <DialogContent style={{ backgroundColor: "#eaeaea" }}>
+                    <DialogContentText>
+                        <img src={product.pictureUrl} alt={product.name} style={{ width: "100%" }} />
+                    </DialogContentText>
+                </DialogContent>
+                <StyledDialogActions>
+                    <Button onClick={handleClose}>Exit</Button>
+                </StyledDialogActions>
+            </Dialog>
         </Grid>
     );
 }

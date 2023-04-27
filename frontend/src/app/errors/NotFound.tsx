@@ -5,7 +5,7 @@ export default function NotFound() {
     return (
         <Container component={Paper} style={{ height: 400 }}>
             <Typography gutterBottom variant={"h3"}>
-                Oops - the page you are looking for was not found!
+                Oops - we could not find what your are looking for!
             </Typography>
             <Divider />
             <Button component={Link} to="/catalog" fullWidth>
