@@ -1,4 +1,4 @@
-import React from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { styled } from "@mui/material/styles";
 import { TextField, Button, Typography, Paper, IconButton, LinearProgress, Box, Divider, Grid } from "@mui/material";
@@ -6,9 +6,10 @@ import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { deposit, expense, save, setTarget, reset, editDeposit, deleteDeposit, editExpense, deleteExpense } from "./budgetSlice";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // import { DatePickerProps } from "@mui/lab/DatePicker";
-import { DatePicker, DatePickerProps } from "@mui/lab";
+// import { DatePicker, DatePickerProps } from "@mui/lab";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 // Define the types for the state and the props
 type State = {
@@ -27,15 +28,22 @@ type Props = {
     title?: string;
 };
 
-// Define the colors for the pie chart
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+// A function that returns a random hex color code for the pie chart
+const getRandomColor = () => {
+    let letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
 
 // Define the styles for the components
 const Root = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    margin: theme.spacing(2),
+    // margin: theme.spacing(2),
 }));
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(2),
@@ -57,7 +65,7 @@ const Chart = styled(PieChart)(({ theme }) => ({
 }));
 const List = styled("ul")(({ theme }) => ({
     listStyleType: "none",
-    padding: 0,
+    padding: theme.spacing(1),
 }));
 const ListItem = styled("li")(({ theme }) => ({
     display: "flex",
@@ -74,6 +82,25 @@ const dateFormat = (date: Date | null) => {
     }
 };
 
+// custom hook for input Validation field
+function useDepositInputs(inputTitle: string, amount: string) {
+    const [validInputs, setValidInputs] = useState(false);
+    useEffect(() => {
+        const isValid = inputTitle !== "" && amount !== "";
+        setValidInputs(isValid);
+    }, [inputTitle, amount]);
+    return validInputs;
+}
+
+function useExpenseInputs(inputTitle: string, amount: string) {
+    const [validInputs, setValidInputs] = useState(false);
+    useEffect(() => {
+        const isValid = inputTitle !== "" && amount !== "";
+        setValidInputs(isValid);
+    }, [inputTitle, amount]);
+    return validInputs;
+}
+
 // Define the main component
 const BudgetPage = ({ title }: Props) => {
     // Use the state and the dispatch from Redux
@@ -81,25 +108,25 @@ const BudgetPage = ({ title }: Props) => {
     const dispatch = useDispatch();
 
     // Use the local state for the input fields
-    const [depositTitle, setDepositTitle] = React.useState("");
-    const [depositAmount, setDepositAmount] = React.useState("");
-    const [depositDate, setDepositDate] = React.useState<Date>(new Date()); // Changed from Date | null
-    const [expenseTitle, setExpenseTitle] = React.useState("");
-    const [expenseAmount, setExpenseAmount] = React.useState("");
-    const [expenseDate, setExpenseDate] = React.useState<Date>(new Date()); // Changed from Date | null
-    const [savingAmount, setSavingAmount] = React.useState("");
-    const [targetAmount, setTargetAmount] = React.useState("");
+    const [depositTitle, setDepositTitle] = useState("");
+    const [depositAmount, setDepositAmount] = useState("");
+    const [depositDate, setDepositDate] = useState<Date>(new Date()); // Changed from Date | null
+    const [expenseTitle, setExpenseTitle] = useState("");
+    const [expenseAmount, setExpenseAmount] = useState("");
+    const [expenseDate, setExpenseDate] = useState<Date>(new Date()); // Changed from Date | null
+    const [savingAmount, setSavingAmount] = useState("");
+    const [targetAmount, setTargetAmount] = useState("");
 
     // Use the local state for editing mode
-    const [editingDepositId, setEditingDepositId] = React.useState<number | null>(null);
-    const [editingExpenseId, setEditingExpenseId] = React.useState<number | null>(null);
+    const [editingDepositId, setEditingDepositId] = useState<number | null>(null);
+    const [editingExpenseId, setEditingExpenseId] = useState<number | null>(null);
 
     // Handle the input changes
-    const handleDepositTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleDepositTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
         setDepositTitle(event.target.value);
     };
 
-    const handleDepositAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleDepositAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
         setDepositAmount(event.target.value);
     };
 
@@ -109,11 +136,11 @@ const BudgetPage = ({ title }: Props) => {
         }
     };
 
-    const handleExpenseTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleExpenseTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
         setExpenseTitle(event.target.value);
     };
 
-    const handleExpenseAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleExpenseAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
         setExpenseAmount(event.target.value);
     };
 
@@ -123,10 +150,10 @@ const BudgetPage = ({ title }: Props) => {
         }
     };
 
-    const handleSavingAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSavingAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
         setSavingAmount(event.target.value);
     };
-    const handleTargetAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleTargetAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
         setTargetAmount(event.target.value);
     };
 
@@ -175,218 +202,218 @@ const BudgetPage = ({ title }: Props) => {
         dispatch(deleteExpense(id));
     };
 
+    // Use the custom hook to validate the input values
+    const depositInputs = useDepositInputs(depositTitle, depositAmount);
+    const expenseInputs = useExpenseInputs(expenseTitle, expenseAmount);
+
     // Render the component
     return (
         <Root>
-            <Typography className="animatedTitle" variant="h6">
-                {title}
-            </Typography>
-            <Grid container spacing={2}>
-                <Grid item xs={3}>
-                    <StyledPaper>
-                        <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            Deposit
-                        </Typography>
-                        <Divider />
-                        <Form noValidate autoComplete="off">
-                            <Input label="Title" value={depositTitle} onChange={handleDepositTitleChange} />
-                            <Input label="Amount" type="number" value={depositAmount} onChange={handleDepositAmountChange} />
-                            <DatePicker label="Date" value={depositDate} onChange={handleDepositDateChange} renderInput={(params: DatePickerProps<unknown>) => <TextField {...params} />} />
-                            {/* Added type annotation for params */}
-                            <StyledButton variant="contained" color="primary" onClick={handleDepositClick}>
-                                Add
-                            </StyledButton>
-                        </Form>
-                        <List>
-                            {state.deposits.map((deposit, index) => (
-                                <ListItem key={index}>
-                                    {editingDepositId === index ? (
-                                        <Form noValidate autoComplete="off">
-                                            <Input label="Title" value={deposit.title} onChange={(event) => dispatch(editDeposit({ id: index, title: event.target.value }))} />
-                                            <Input label="Amount" type="number" value={deposit.amount} onChange={(event) => dispatch(editDeposit({ id: index, amount: +event.target.value }))} />
-                                            <DatePicker
-                                                label="Date"
-                                                value={deposit.date}
-                                                onChange={(date: Date | null) => date && dispatch(editDeposit({ id: index, date: date }))}
-                                                renderInput={(params: DatePickerProps<unknown>) => <TextField {...params} />}
-                                            />
-                                            <StyledButton variant="contained" color="primary" onClick={() => setEditingDepositId(null)}>
-                                                Save
-                                            </StyledButton>
-                                        </Form>
-                                    ) : (
-                                        <>
-                                            <Typography variant="body1">
-                                                {deposit.title}: €{deposit.amount} ({dateFormat(deposit.date)})
-                                            </Typography>{" "}
-                                            <IconButton onClick={() => handleEditDepositClick(index)}>
-                                                <EditIcon />
-                                            </IconButton>
-                                            <IconButton onClick={() => handleDeleteDepositClick(index)}>
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </>
-                                    )}
-                                </ListItem>
-                            ))}
-                        </List>
-                    </StyledPaper>
-                    <StyledPaper>
-                        <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            Expense
-                        </Typography>
-                        <Divider />
-                        <Form noValidate autoComplete="off">
-                            <Input label="Title" value={expenseTitle} onChange={handleExpenseTitleChange} />
-                            <Input label="Amount" type="number" value={expenseAmount} onChange={handleExpenseAmountChange} />
-                            <DatePicker label="Date" value={expenseDate} onChange={handleExpenseDateChange} renderInput={(params: DatePickerProps<unknown>) => <TextField {...params} />} />
-                            <StyledButton variant="contained" color="secondary" onClick={handleExpenseClick}>
-                                Subtract
-                            </StyledButton>
-                        </Form>
-                        <List>
-                            {state.expenses.map((expense, index) => (
-                                <ListItem key={index}>
-                                    {editingExpenseId === index ? (
-                                        <Form noValidate autoComplete="off">
-                                            <Input label="Title" value={expense.title} onChange={(event) => dispatch(editExpense({ id: index, title: event.target.value }))} />
-                                            <Input label="Amount" type="number" value={expense.amount} onChange={(event) => dispatch(editExpense({ id: index, amount: +event.target.value }))} />
-                                            <DatePicker
-                                                label="Date"
-                                                value={expense.date}
-                                                onChange={(date: Date | null) => date && dispatch(editExpense({ id: index, date: date }))}
-                                                renderInput={(params: DatePickerProps<unknown>) => <TextField {...params} />}
-                                            />
-                                            <StyledButton variant="contained" color="primary" onClick={() => setEditingExpenseId(null)}>
-                                                Save
-                                            </StyledButton>
-                                        </Form>
-                                    ) : (
-                                        <>
-                                            <Typography variant="body1">
-                                                {expense.title}: €{expense.amount} ({dateFormat(expense.date)})
-                                            </Typography>
-                                            <IconButton onClick={() => handleEditExpenseClick(index)}>
-                                                <EditIcon />
-                                            </IconButton>
-                                            <IconButton onClick={() => handleDeleteExpenseClick(index)}>
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </>
-                                    )}
-                                </ListItem>
-                            ))}
-                        </List>
-                    </StyledPaper>
-                </Grid>
-                <Grid item xs={3}>
-                    <StyledPaper>
-                        <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            Saving
-                        </Typography>
-                        <Divider />
-                        <Form noValidate autoComplete="off">
-                            <Input label="Amount" type="number" value={savingAmount} onChange={handleSavingAmountChange} />
-                            <StyledButton variant="contained" color="primary" onClick={handleSaveClick}>
-                                Save
-                            </StyledButton>
-                        </Form>
-                        <Typography variant="body1">
-                            Total saving: €<span style={{ color: "orange" }}>{state.saving}</span>
-                        </Typography>
-                    </StyledPaper>
-                    <StyledPaper>
-                        <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            Target
-                        </Typography>
-                        <Divider />
-                        <Form noValidate autoComplete="off">
-                            <Input label="Amount" type="number" value={targetAmount} onChange={handleTargetAmountChange} />
-                            <StyledButton variant="contained" color="primary" onClick={handleTargetClick}>
-                                Set
-                            </StyledButton>
-                        </Form>
-                        <Typography variant="body1">
-                            Target: €<span style={{ color: "orange" }}>{state.target}</span>
-                        </Typography>
-                    </StyledPaper>
-
-                    <StyledPaper>
-                        <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            Progress
-                        </Typography>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Box sx={{ width: "100%", mr: 1 }}>
-                                <LinearProgress variant="determinate" value={(state.saving / state.target) * 100} sx={{ height: 10 }} />
-                            </Box>
-                            <Box sx={{ minWidth: 35 }}>
-                                <Typography variant="body2" color="text.secondary">{`${Math.round((state.saving / state.target) * 100)}%`}</Typography>
-                            </Box>
-                        </Box>
-                        {state.saving >= state.target ? (
-                            <Typography variant="body1" color="primary">
-                                Congratulations! You have reached your saving goal! 🎉
-                            </Typography>
-                        ) : (
-                            <Typography variant="body1" color="error">
-                                You still need €{state.target - state.saving} to reach your saving goal. Keep it up! 💪
-                            </Typography>
-                        )}
-                    </StyledPaper>
-                </Grid>
-                <Grid item xs={3}>
-                    <StyledPaper>
-                        <Box sx={{ p: 2 }}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Typography className="animatedTitle" variant="h6">
+                    {title}
+                </Typography>
+                <Grid container spacing={2} sx={{ m: 2 }}>
+                    <Grid item xs={6}>
+                        <StyledPaper>
                             <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                Balance
+                                Deposit
                             </Typography>
-                            <Divider />
-                            <Box sx={{ p: 2 }}>
-                                <Typography variant="body1">
-                                    Total deposit: €<span style={{ color: "orange" }}>{state.deposit}</span>
-                                </Typography>
-                                <Typography variant="body1">
-                                    Total expense: €<span style={{ color: "orange" }}>{state.expense}</span>
-                                </Typography>
-                                <Typography variant="body1">
-                                    Balance: €<span style={{ color: "orange" }}>{state.balance}</span>
-                                </Typography>
+                            <Divider sx={{ mb: 2 }}/>
+                            <Form noValidate autoComplete="off">
+                                <Input label="Title" value={depositTitle} onChange={handleDepositTitleChange} />
+                                <Input label="Amount" type="number" value={depositAmount} onChange={handleDepositAmountChange} />
+                                <DatePicker label="Deposit Date" value={depositDate} onChange={handleDepositDateChange} />
+                                <StyledButton variant="contained" color="primary" onClick={handleDepositClick} disabled={!depositInputs}>
+                                    Add
+                                </StyledButton>
+                            </Form>
+                            <List>
+                                {state.deposits.map((deposit, index) => (
+                                    <ListItem key={index}>
+                                        {editingDepositId === index ? (
+                                            <Form noValidate autoComplete="off">
+                                                <Input label="Title" value={deposit.title} onChange={(event) => dispatch(editDeposit({ id: index, title: event.target.value }))} />
+                                                <Input label="Amount" type="number" value={deposit.amount} onChange={(event) => dispatch(editDeposit({ id: index, amount: +event.target.value }))} />
+                                                <DatePicker label="Deposit Date" value={deposit.date} onChange={(date: Date | null) => date && dispatch(editDeposit({ id: index, date: date }))} />
+                                                <StyledButton variant="contained" color="primary" onClick={() => setEditingDepositId(null)}>
+                                                    Save
+                                                </StyledButton>
+                                            </Form>
+                                        ) : (
+                                            <>
+                                                <Typography variant="body1">
+                                                    {deposit.title}: €{deposit.amount} ({dateFormat(deposit.date)})
+                                                </Typography>{" "}
+                                                <IconButton onClick={() => handleEditDepositClick(index)}>
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton onClick={() => handleDeleteDepositClick(index)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </>
+                                        )}
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </StyledPaper>
+                        <StyledPaper>
+                            <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                Expense
+                            </Typography>
+                            <Divider sx={{ mb: 2 }}/>
+                            <Form noValidate autoComplete="off">
+                                <Input label="Title" value={expenseTitle} onChange={handleExpenseTitleChange} />
+                                <Input label="Amount" type="number" value={expenseAmount} onChange={handleExpenseAmountChange} />
+                                <DatePicker label="Expense Date" value={expenseDate} onChange={handleExpenseDateChange} />
+                                <StyledButton variant="contained" color="secondary" onClick={handleExpenseClick} disabled={!expenseInputs}>
+                                    Subtract
+                                </StyledButton>
+                            </Form>
+                            <List>
+                                {state.expenses.map((expense, index) => (
+                                    <ListItem key={index}>
+                                        {editingExpenseId === index ? (
+                                            <Form noValidate autoComplete="off">
+                                                <Input label="Title" value={expense.title} onChange={(event) => dispatch(editExpense({ id: index, title: event.target.value }))} />
+                                                <Input label="Amount" type="number" value={expense.amount} onChange={(event) => dispatch(editExpense({ id: index, amount: +event.target.value }))} />
+                                                <DatePicker label="Date" value={expense.date} onChange={(date: Date | null) => date && dispatch(editExpense({ id: index, date: date }))} />
+                                                <StyledButton variant="contained" color="primary" onClick={() => setEditingExpenseId(null)}>
+                                                    Save
+                                                </StyledButton>
+                                            </Form>
+                                        ) : (
+                                            <>
+                                                <Typography variant="body1">
+                                                    {expense.title}: €{expense.amount} ({dateFormat(expense.date)})
+                                                </Typography>
+                                                <IconButton onClick={() => handleEditExpenseClick(index)}>
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton onClick={() => handleDeleteExpenseClick(index)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </>
+                                        )}
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </StyledPaper>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <StyledPaper>
+                            <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                Target
+                            </Typography>
+                            <Divider sx={{ mb: 2 }} />
+                            <Form noValidate autoComplete="off">
+                                <Input label="Amount" type="number" value={targetAmount} onChange={handleTargetAmountChange} />
+                                <StyledButton variant="contained" color="primary" onClick={handleTargetClick}>
+                                    Set
+                                </StyledButton>
+                            </Form>
+                            <Typography variant="body1">
+                                Target: €<span style={{ color: "orange" }}>{state.target}</span>
+                            </Typography>
+                        </StyledPaper>
+
+                        <StyledPaper>
+                            <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                Saving
+                            </Typography>
+                            <Divider sx={{ mb: 2 }}/>
+                            <Form noValidate autoComplete="off">
+                                <Input label="Amount" type="number" value={savingAmount} onChange={handleSavingAmountChange} />
+                                <StyledButton variant="contained" color="primary" onClick={handleSaveClick}>
+                                    Save
+                                </StyledButton>
+                            </Form>
+                            <Typography variant="body1">
+                                Total saving: €<span style={{ color: "orange" }}>{state.saving}</span>
+                            </Typography>
+                        </StyledPaper>
+
+                        <StyledPaper>
+                            <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                Progress
+                            </Typography>
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                                <Box sx={{ width: "100%", mr: 1 }}>
+                                    <LinearProgress variant="determinate" value={(state.saving / state.target) * 100} sx={{ height: 10 }} />
+                                </Box>
+                                <Box sx={{ minWidth: 35 }}>
+                                    <Typography variant="body2" color="text.secondary">{`${Math.round((state.saving / state.target) * 100)}%`}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                    </StyledPaper>
-                    <StyledButton variant="contained" color="warning" onClick={handleResetClick}>
-                        Reset
-                    </StyledButton>
+                            {state.saving >= state.target ? (
+                                <Typography variant="body1" color="primary">
+                                    Congratulations! You have reached your saving goal! 🎉
+                                </Typography>
+                            ) : (
+                                <Typography variant="body1" color="error">
+                                    You still need €{state.target - state.saving} to reach your saving goal. Keep it up! 💪
+                                </Typography>
+                            )}
+                        </StyledPaper>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <StyledPaper>
+                            <Box sx={{ p: 2 }}>
+                                <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                    Balance
+                                </Typography>
+                                <Divider />
+                                <Box sx={{ p: 2 }}>
+                                    <Typography variant="body1">
+                                        Total deposit: €<span style={{ color: "orange" }}>{state.deposit}</span>
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        Total expense: €<span style={{ color: "orange" }}>{state.expense}</span>
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        Balance: €<span style={{ color: "orange" }}>{state.balance}</span>
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </StyledPaper>
+                        <StyledButton variant="contained" color="warning" onClick={handleResetClick}>
+                            Reset
+                        </StyledButton>
+                    </Grid>
+                    <Grid container spacing={2} sx={{ m: 2 }}>
+                        <Grid item xs={6}>
+                            <StyledPaper sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                <Typography variant="h6">Pie Chart for Deposits</Typography>
+                                <Divider />
+                                <Chart width={300} height={300}>
+                                    <Pie dataKey="amount" nameKey="title" isAnimationActive={false} data={state.deposits} cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
+                                        {state.deposits.map((entry, index) => (
+                                            <Cell key={`cell-${depositTitle}`} fill={getRandomColor()} />
+                                        ))}
+                                    </Pie>
+                                    <Legend iconType="circle" layout="horizontal" verticalAlign="bottom" align="center" />
+                                    <Tooltip formatter={(value) => `${value}`} />
+                                </Chart>
+                            </StyledPaper>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <StyledPaper sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                <Typography variant="h6">Pie Chart for Expenses</Typography>
+                                <Divider />
+                                <Chart width={300} height={300}>
+                                    <Pie dataKey="amount" nameKey="title" isAnimationActive={false} data={state.expenses} cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
+                                        {state.expenses.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={getRandomColor()} />
+                                        ))}
+                                    </Pie>
+                                    <Legend iconType="circle" layout="horizontal" verticalAlign="bottom" align="center" />
+                                    <Tooltip formatter={(value) => `${value}`} />
+                                </Chart>
+                            </StyledPaper>
+                        </Grid>
+                    </Grid>
                 </Grid>
-                <Grid item xs={3}>
-                    <StyledPaper sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <Typography variant="h6">Pie Chart for Deposits</Typography>
-                        <Divider />
-                        <Chart width={300} height={300}>
-                            <Pie dataKey="amount" nameKey="title" isAnimationActive={false} data={state.deposits} cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
-                                {state.deposits.map((entry, index) => (
-                                    <Cell key={`cell-${depositTitle}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Pie>
-                            <Legend iconType="circle" layout="horizontal" verticalAlign="bottom" align="center" />
-                            <Tooltip formatter={(value) => `${value}`} />
-                        </Chart>
-                    </StyledPaper>
-                    <StyledPaper sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <Typography variant="h6">Pie Chart for Expenses</Typography>
-                        <Divider />
-                        <Chart width={300} height={300}>
-                            <Pie dataKey="amount" nameKey="title" isAnimationActive={false} data={state.expenses} cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
-                                {state.expenses.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Pie>
-                            <Legend iconType="circle" layout="horizontal" verticalAlign="bottom" align="center" />
-                            <Tooltip formatter={(value) => `${value}`} />
-                        </Chart>
-                    </StyledPaper>
-                </Grid>
-            </Grid>
+            </LocalizationProvider>
         </Root>
     );
 };
