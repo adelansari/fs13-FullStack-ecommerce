@@ -46,7 +46,7 @@ builder.Services.AddSwaggerGen(c =>
 // Add a database context to the container
 builder.Services.AddDbContext<StoreContext>(opt =>
 {
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddCors();
 builder.Services
@@ -94,6 +94,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseDefaultFiles(); // it will look for index.html
+app.UseStaticFiles();
+
 // This method configures Cross-Origin Resource Sharing (CORS) between backend and frontend
 app.UseCors(opt =>
 {
@@ -108,6 +111,7 @@ app.UseCors(opt =>
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapFallbackToController("Index", "Fallback");
 
 // Create a new scope for services
 var scope = app.Services.CreateScope();

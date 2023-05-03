@@ -116,3 +116,6 @@ Test cards: https://stripe.com/docs/testing#cards
 Using secret manager from dotnet
 `dotnet user-secrets init`
 `dotnet user-secrets set "StripeSettings:PublishableKey" "SectetCodeHERE"`
+
+## Setting up docker
+`docker run --name dev -e POSTGRES_USER=appuser -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres:latest`
