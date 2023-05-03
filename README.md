@@ -108,4 +108,11 @@ Here I will try to create a debugger and implement error handling
 | :-------- | :-------------- |
 | GET       | `/api/Payments` |
 
+## Payments submit and testing
 Test cards: https://stripe.com/docs/testing#cards
+`stripe listen -f http://localhost:5000/api/payments/webhook -e charge.succeeded`
+
+## Setting-up user secrets
+Using secret manager from dotnet
+`dotnet user-secrets init`
+`dotnet user-secrets set "StripeSettings:PublishableKey" "SectetCodeHERE"`

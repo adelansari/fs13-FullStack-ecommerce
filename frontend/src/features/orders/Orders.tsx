@@ -42,7 +42,7 @@ export default function Orders() {
                                 {order.id}
                             </TableCell>
                             <TableCell align="center">{order.orderDate.split("T")[0]}</TableCell>
-                            <TableCell align="center">{order.orderStatus}</TableCell>
+                            <TableCell align="center">{order.orderStatus.replace(/([a-z])([A-Z])/g, "$1 $2")}</TableCell>
                             <TableCell align="center">{currencyFormat(order.total)}</TableCell>
                             <TableCell align="center">
                                 <Button onClick={() => setSelectedOrderNumber(order.id)}>View</Button>

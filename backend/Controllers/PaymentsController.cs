@@ -69,6 +69,39 @@ namespace backend.Controllers
             return basket.MapBasketToDto();
         }
 
+        // This is an endpoint that accepts a post request from Stripe webhook
+        [HttpPost("webhook")]
+        public async Task<ActionResult> StripeWebhook()
+        {
+            // This reads the request body as a json string
+            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+
+            // This validates the event using the Stripe signature and webhook secret
+            var stripeEvent = EventUtility.ConstructEvent(
+                json,
+                Request.Headers["Stripe-Signature"],
+                _config["StripeSettings:WhSecret"]
+            );
+
+            // This casts the event data object as a charge object
+            var charge = (Charge)stripeEvent.Data.Object;
+
+            // This finds the order that matches the payment intent id of the charge
+            var order = await _context.Orders.FirstOrDefaultAsync(
+                x => x.PaymentIntentId == charge.PaymentIntentId
+            );
+
+            // This checks if the charge status is succeeded and updates the order status accordingly
+            if (charge.Status == "succeeded")
+                order.OrderStatus = OrderStatus.PaymentReceived;
+
+            // This saves the changes to the database
+            await _context.SaveChangesAsync();
+
+            // This returns an empty result to acknowledge the webhook
+            return new EmptyResult();
+        }
+
         
     }
 }

@@ -15,7 +15,7 @@ export default function OrderDetailed({ order, setSelectedOrder }: Props) {
         <>
             <Box display="flex" justifyContent="space-between">
                 <Typography sx={{ p: 2 }} gutterBottom variant="h4">
-                    Order# {order.id} - {order.orderStatus}
+                    Order# {order.id} - {order.orderStatus.replace(/([a-z])([A-Z])/g, "$1 $2")}
                 </Typography>
                 <Button onClick={() => setSelectedOrder(0)} sx={{ m: 2 }} size="large" variant="contained">
                     Back to orders
