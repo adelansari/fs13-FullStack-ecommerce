@@ -1,15 +1,17 @@
 # Fullstack Project
 
-![TypeScript](https://img.shields.io/badge/TypeScript-v.4-green)
-![SASS](https://img.shields.io/badge/SASS-v.4-hotpink)
-![React](https://img.shields.io/badge/React-v.18-blue)
-![Redux toolkit](https://img.shields.io/badge/Redux-v.1.9-brown)
+![TypeScript](https://img.shields.io/badge/TypeScript-v.4.9.5-green)
+![CSS](https://img.shields.io/badge/CSS-hotpink)
+![React](https://img.shields.io/badge/React-v.18.2-blue)
+![Redux toolkit](https://img.shields.io/badge/Redux-v.1.9.5-brown)
 ![.NET Core](https://img.shields.io/badge/.NET%20Core-v.7-purple)
 ![EF Core](https://img.shields.io/badge/EF%20Core-v.7-cyan)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-v.14-drakblue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-v.15-drakblue)
 
-* Frontend: SASS, TypeScript, React, Redux Toolkit
+* Frontend: TypeScript, React, Redux Toolkit, Material UI
 * Backend: ASP .NET Core, Entity Framework Core, PostgreSQL
+
+Deployed App: [fs13-fullstack.fly.dev](https://fs13-fullstack.fly.dev/)
 
 ## Steps in creating this project from scratch
 

@@ -77,7 +77,7 @@ export default function ProductCard({ product }: Props) {
                 </CardContent>
                 <CardActions sx={{ justifyContent: "space-between", alignItems: "center" }}>
                     <LoadingButton
-                        loading={status.includes("pendingAddItem" + product.id)}
+                        loading={status ==="pendingAddItem" + product.id}
                         onClick={() => dispatch(addBasketItemAsync({ productId: product.id }))}
                         variant="contained"
                         size="small"
