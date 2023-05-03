@@ -1,9 +1,9 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { styled } from "@mui/material/styles";
 import { TextField, Button, Typography, Paper, IconButton, LinearProgress, Box, Divider, Grid } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
-import { deposit, expense, save, setTarget, reset, editDeposit, deleteDeposit, editExpense, deleteExpense } from "./budgetSlice";
+import { deposit, expense, save, setTarget, reset, editDeposit, deleteDeposit, editExpense, deleteExpense, updateState } from "./budgetSlice";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 // import { DatePickerProps } from "@mui/lab/DatePicker";
@@ -33,10 +33,10 @@ const getRandomColor = () => {
     let letters = "0123456789ABCDEF";
     let color = "#";
     for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
+        color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-  };
+};
 
 // Define the styles for the components
 const Root = styled("div")(({ theme }) => ({
@@ -47,7 +47,7 @@ const Root = styled("div")(({ theme }) => ({
 }));
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(2),
-    maxWidth: 600,
+    // maxWidth: 600,
 }));
 const Form = styled("form")(({ theme }) => ({
     display: "flex",
@@ -116,6 +116,28 @@ const BudgetPage = ({ title }: Props) => {
     const [expenseDate, setExpenseDate] = useState<Date>(new Date()); // Changed from Date | null
     const [savingAmount, setSavingAmount] = useState("");
     const [targetAmount, setTargetAmount] = useState("");
+
+    // Define a function that saves the state to local storage
+    const saveState = (state) => {
+        // Convert the state object to a string
+        const stateString = JSON.stringify(state);
+        // Save the state string to local storage with a key of “budgetState”
+        localStorage.setItem("budgetState", stateString);
+    };
+
+    // Define a function that loads the state from local storage
+    const loadState = () => {
+        // Get the state string from local storage with a key of “budgetState”
+        const stateString = localStorage.getItem("budgetState");
+        // If the state string exists, parse it to an object and return it
+        if (stateString) {
+            const state = JSON.parse(stateString);
+            return state;
+        } // Otherwise, return null
+        else {
+            return null;
+        }
+    };
 
     // Use the local state for editing mode
     const [editingDepositId, setEditingDepositId] = useState<number | null>(null);
@@ -206,6 +228,35 @@ const BudgetPage = ({ title }: Props) => {
     const depositInputs = useDepositInputs(depositTitle, depositAmount);
     const expenseInputs = useExpenseInputs(expenseTitle, expenseAmount);
 
+    // Use a ref to store a boolean flag for tracking the component mount status
+    const isMounted = useRef(false);
+
+    // Use the useEffect hook to save and load state
+    useEffect(() => {
+        // Set the flag to true when the component is mounted
+        isMounted.current = true;
+
+        // Load the state from local storage only once when the component is mounted
+        if (isMounted.current) {
+            const savedState = loadState();
+
+            // If the saved state exists, dispatch an action to update the Redux store with it
+            if (savedState) {
+                dispatch(updateState(savedState));
+            }
+        }
+        // Save the state to local storage when the component is unmounted or when the window is closed
+        return () => {
+            // Set the flag to false when the component is unmounted
+            isMounted.current = false;
+
+            // Save the state to local storage only once when the component is unmounted
+            if (!isMounted.current) {
+                saveState(state);
+            }
+        };
+    }, [dispatch]);
+
     // Render the component
     return (
         <Root>
@@ -213,13 +264,30 @@ const BudgetPage = ({ title }: Props) => {
                 <Typography className="animatedTitle" variant="h6">
                     {title}
                 </Typography>
-                <Grid container spacing={2} sx={{ m: 2 }}>
-                    <Grid item xs={6}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
                         <StyledPaper>
-                            <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                Deposit
+                            <Box sx={{ p: 2 }}>
+                                <Typography variant="h5" align="center">
+                                    Balance: <span style={{ fontWeight: "normal" }}>€</span>
+                                    <span style={{ color: "orange" }}>{state.balance}</span>
+                                </Typography>
+                            </Box>
+                        </StyledPaper>
+                        <StyledButton variant="contained" color="warning" onClick={handleResetClick} sx={{ rotate: 90, position: "relative", right: -40, top: -40 }}>
+                            Reset
+                        </StyledButton>
+                    </Grid>
+                </Grid>
+
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={8}>
+                        <StyledPaper>
+                            <Typography variant="h6" align="center">
+                                Deposit: <span style={{ fontWeight: "normal" }}>€</span>
+                                <span style={{ color: "orange" }}>{state.deposit}</span>
                             </Typography>
-                            <Divider sx={{ mb: 2 }}/>
+                            <Divider sx={{ mb: 2 }} />
                             <Form noValidate autoComplete="off">
                                 <Input label="Title" value={depositTitle} onChange={handleDepositTitleChange} />
                                 <Input label="Amount" type="number" value={depositAmount} onChange={handleDepositAmountChange} />
@@ -258,10 +326,11 @@ const BudgetPage = ({ title }: Props) => {
                             </List>
                         </StyledPaper>
                         <StyledPaper>
-                            <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                Expense
+                            <Typography variant="h6" align="center">
+                                Expense: <span style={{ fontWeight: "normal" }}>€</span>
+                                <span style={{ color: "orange" }}>{state.expense}</span>
                             </Typography>
-                            <Divider sx={{ mb: 2 }}/>
+                            <Divider sx={{ mb: 2 }} />
                             <Form noValidate autoComplete="off">
                                 <Input label="Title" value={expenseTitle} onChange={handleExpenseTitleChange} />
                                 <Input label="Amount" type="number" value={expenseAmount} onChange={handleExpenseAmountChange} />
@@ -300,7 +369,7 @@ const BudgetPage = ({ title }: Props) => {
                             </List>
                         </StyledPaper>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={12} md={4}>
                         <StyledPaper>
                             <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                                 Target
@@ -321,7 +390,7 @@ const BudgetPage = ({ title }: Props) => {
                             <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                                 Saving
                             </Typography>
-                            <Divider sx={{ mb: 2 }}/>
+                            <Divider sx={{ mb: 2 }} />
                             <Form noValidate autoComplete="off">
                                 <Input label="Amount" type="number" value={savingAmount} onChange={handleSavingAmountChange} />
                                 <StyledButton variant="contained" color="primary" onClick={handleSaveClick}>
@@ -356,32 +425,9 @@ const BudgetPage = ({ title }: Props) => {
                             )}
                         </StyledPaper>
                     </Grid>
-                    <Grid item xs={4}>
-                        <StyledPaper>
-                            <Box sx={{ p: 2 }}>
-                                <Typography variant="h6" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                    Balance
-                                </Typography>
-                                <Divider />
-                                <Box sx={{ p: 2 }}>
-                                    <Typography variant="body1">
-                                        Total deposit: €<span style={{ color: "orange" }}>{state.deposit}</span>
-                                    </Typography>
-                                    <Typography variant="body1">
-                                        Total expense: €<span style={{ color: "orange" }}>{state.expense}</span>
-                                    </Typography>
-                                    <Typography variant="body1">
-                                        Balance: €<span style={{ color: "orange" }}>{state.balance}</span>
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </StyledPaper>
-                        <StyledButton variant="contained" color="warning" onClick={handleResetClick}>
-                            Reset
-                        </StyledButton>
-                    </Grid>
+
                     <Grid container spacing={2} sx={{ m: 2 }}>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} md={6}>
                             <StyledPaper sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                                 <Typography variant="h6">Pie Chart for Deposits</Typography>
                                 <Divider />
@@ -396,7 +442,7 @@ const BudgetPage = ({ title }: Props) => {
                                 </Chart>
                             </StyledPaper>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} md={6}>
                             <StyledPaper sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                                 <Typography variant="h6">Pie Chart for Expenses</Typography>
                                 <Divider />
