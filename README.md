@@ -82,7 +82,7 @@ Here I will try to create a debugger and implement error handling
 
 ### Buggy
 | HTTP Verb | Endpoint                      |
-| :--------- | :---------------------------- |
+| :-------- | :---------------------------- |
 | GET       | `/api/Buggy/not-found`        |
 | GET       | `/api/Buggy/bad-request`      |
 | GET       | `/api/Buggy/unauthorised`     |
@@ -102,3 +102,8 @@ Here I will try to create a debugger and implement error handling
 | GET       | `/api/Products`         |
 | GET       | `/api/Products/{id}`    |
 | GET       | `/api/Products/filters` |
+
+### Payments
+| HTTP Verb | Endpoint        |
+| :-------- | :-------------- |
+| GET       | `/api/Payments` |
