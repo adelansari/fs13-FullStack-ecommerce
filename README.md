@@ -118,4 +118,14 @@ Using secret manager from dotnet
 `dotnet user-secrets set "StripeSettings:PublishableKey" "SectetCodeHERE"`
 
 ## Setting up docker
-`docker run --name dev -e POSTGRES_USER=appuser -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres:latest`
+### creating the DB
+`docker run --name dev -e POSTGRES_USER=EnterAUsernameHERE -e POSTGRES_PASSWORD=EnterAPAsswordHere -p 5432:5432 -d postgres:latest`
+
+### building docker image
+`docker build -t DockerUsernameHere/fs13-fullstack .`
+
+### running docker image
+`docker run --rm -it -p 8080:80 DockerUsernameHere/fs13-fullstack`
+
+### pushing docker changes
+`docker push DockerUsernameHere/fs13-fullstack:latest`
