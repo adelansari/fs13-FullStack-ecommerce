@@ -1,5 +1,4 @@
-// Import the createAction function from Redux Toolkit
-import { createSlice, PayloadAction, createAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Define the initial state of the budget app
 const initialState = {
@@ -66,10 +65,12 @@ const budgetSlice = createSlice({
             // Update the state with the target amount
             state.target = action.payload;
         },
+
         reset(state) {
             // Reset the state to the initial state
             Object.assign(state, initialState);
         },
+
         // Define the reducer for editing a deposit
         editDeposit(state, action: PayloadAction<EditPayload>) {
             // Find the index of the deposit to edit
@@ -87,6 +88,7 @@ const budgetSlice = createSlice({
                 state.deposits[index].date = action.payload.date;
             }
         },
+
         // Define the reducer for deleting a deposit
         deleteDeposit(state, action: PayloadAction<number>) {
             // Find the index of the deposit to delete
@@ -97,6 +99,7 @@ const budgetSlice = createSlice({
             // Remove the deposit from the array
             state.deposits.splice(index, 1);
         },
+
         // Define the reducer for editing an expense
         editExpense(state, action: PayloadAction<EditPayload>) {
             // Find the index of the expense to edit
@@ -114,6 +117,7 @@ const budgetSlice = createSlice({
                 state.expenses[index].date = action.payload.date;
             }
         },
+
         // Define the reducer for deleting an expense
         deleteExpense(state, action: PayloadAction<number>) {
             // Find the index of the expense to delete
@@ -125,19 +129,7 @@ const budgetSlice = createSlice({
             state.expenses.splice(index, 1);
         },
     },
-    extraReducers: (builder) => {
-        builder.addCase(updateState, (state, action) => {
-            // Replace current State with payload of Action
-            Object.assign(state, action.payload);
-        });
-    },
 });
 
-// Export all actions and reducers
-
 export const { deposit, expense, save, setTarget, reset, editDeposit, deleteDeposit, editExpense, deleteExpense } = budgetSlice.actions;
-
 export default budgetSlice.reducer;
-
-// Define an action creator for updating State
-export const updateState = createAction("budget/updateState");

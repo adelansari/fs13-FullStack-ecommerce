@@ -1,9 +1,9 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { styled } from "@mui/material/styles";
 import { TextField, Button, Typography, Paper, IconButton, LinearProgress, Box, Divider, Grid } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
-import { deposit, expense, save, setTarget, reset, editDeposit, deleteDeposit, editExpense, deleteExpense, updateState } from "./budgetSlice";
+import { deposit, expense, save, setTarget, reset, editDeposit, deleteDeposit, editExpense, deleteExpense } from "./budgetSlice";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 // import { DatePickerProps } from "@mui/lab/DatePicker";
@@ -117,28 +117,6 @@ const BudgetPage = ({ title }: Props) => {
     const [savingAmount, setSavingAmount] = useState("");
     const [targetAmount, setTargetAmount] = useState("");
 
-    // Define a function that saves the state to local storage
-    const saveState = (state) => {
-        // Convert the state object to a string
-        const stateString = JSON.stringify(state);
-        // Save the state string to local storage with a key of “budgetState”
-        localStorage.setItem("budgetState", stateString);
-    };
-
-    // Define a function that loads the state from local storage
-    const loadState = () => {
-        // Get the state string from local storage with a key of “budgetState”
-        const stateString = localStorage.getItem("budgetState");
-        // If the state string exists, parse it to an object and return it
-        if (stateString) {
-            const state = JSON.parse(stateString);
-            return state;
-        } // Otherwise, return null
-        else {
-            return null;
-        }
-    };
-
     // Use the local state for editing mode
     const [editingDepositId, setEditingDepositId] = useState<number | null>(null);
     const [editingExpenseId, setEditingExpenseId] = useState<number | null>(null);
@@ -227,35 +205,6 @@ const BudgetPage = ({ title }: Props) => {
     // Use the custom hook to validate the input values
     const depositInputs = useDepositInputs(depositTitle, depositAmount);
     const expenseInputs = useExpenseInputs(expenseTitle, expenseAmount);
-
-    // Use a ref to store a boolean flag for tracking the component mount status
-    const isMounted = useRef(false);
-
-    // Use the useEffect hook to save and load state
-    useEffect(() => {
-        // Set the flag to true when the component is mounted
-        isMounted.current = true;
-
-        // Load the state from local storage only once when the component is mounted
-        if (isMounted.current) {
-            const savedState = loadState();
-
-            // If the saved state exists, dispatch an action to update the Redux store with it
-            if (savedState) {
-                dispatch(updateState(savedState));
-            }
-        }
-        // Save the state to local storage when the component is unmounted or when the window is closed
-        return () => {
-            // Set the flag to false when the component is unmounted
-            isMounted.current = false;
-
-            // Save the state to local storage only once when the component is unmounted
-            if (!isMounted.current) {
-                saveState(state);
-            }
-        };
-    }, [dispatch]);
 
     // Render the component
     return (
