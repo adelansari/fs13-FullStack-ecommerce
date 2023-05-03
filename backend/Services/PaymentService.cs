@@ -30,7 +30,7 @@ namespace backend.Services
                 var options = new PaymentIntentCreateOptions
                 {
                     Amount = subtotal + deliveryFee,
-                    Currency = "usd",
+                    Currency = "eur",
                     PaymentMethodTypes = new List<string> { "card" }
                 };
                 intent = await service.CreateAsync(options);

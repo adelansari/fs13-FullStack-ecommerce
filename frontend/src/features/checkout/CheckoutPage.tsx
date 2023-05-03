@@ -6,11 +6,12 @@ import PaymentForm from "./PaymentForm";
 import Review from "./Review";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { validationSchema } from "./checkoutValidation";
-import { useAppDispatch } from "../../app/store/configureStore";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import agent from "../../app/api/agent";
 import { clearBasket } from "../basket/basketSlice";
 import { LoadingButton } from "@mui/lab";
 import { StripeElementType } from "@stripe/stripe-js";
+import { CardNumberElement, useElements, useStripe } from "@stripe/react-stripe-js";
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
@@ -21,6 +22,12 @@ export default function CheckoutPage() {
     const dispatch = useAppDispatch();
     const [cardState, setCardState] = useState<{ elementError: { [key in StripeElementType]?: string } }>({ elementError: {} });
     const [cardComplete, setCardComplete] = useState<any>({ cardNumber: false, cardExpiry: false, cardCvc: false });
+    const [paymentMessage, setPaymentMessage] = useState("");
+    const [paymentSucceeded, setPaymentSucceeded] = useState(false);
+    const { basket } = useAppSelector((state) => state.basket);
+    const stripe = useStripe();
+    const elements = useElements();
+
     function onCardInputChange(event: any) {
         setCardState({
             ...cardState,
@@ -60,20 +67,44 @@ export default function CheckoutPage() {
         });
     }, [methods]);
 
-    const handleNext = async (data: FieldValues) => {
-        const { nameOnCard, saveAddress, ...shippingAddress } = data;
-        if (activeStep === steps.length - 1) {
-            setLoading(true);
-            try {
-                const order = await agent.Orders.create({ saveAddress, shippingAddress });
-                setOrderNumber(order);
+    async function submitOrder(data: FieldValues) {
+        setLoading(true);
+        const { nameOnCard, saveAddress, ...address } = data;
+        if (!stripe || !elements) return; // stripe not ready
+        try {
+            const cardElement = elements.getElement(CardNumberElement);
+            const paymentResult = await stripe.confirmCardPayment(basket?.clientSecret!, {
+                payment_method: {
+                    card: cardElement!,
+                    billing_details: {
+                        name: nameOnCard,
+                    },
+                },
+            });
+            console.log(paymentResult);
+            if (paymentResult.paymentIntent?.status === "succeeded") {
+                const orderNumber = await agent.Orders.create({ saveAddress, shippingAddress: address });
+                setOrderNumber(orderNumber);
+                setPaymentSucceeded(true);
+                setPaymentMessage("Your payment was successful. Please sit back and relax!");
                 setActiveStep(activeStep + 1);
                 dispatch(clearBasket());
                 setLoading(false);
-            } catch (error) {
-                console.log(error);
+            } else {
+                setPaymentMessage(paymentResult.error?.message!);
+                setPaymentSucceeded(false);
                 setLoading(false);
+                setActiveStep(activeStep + 1);
             }
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
+        }
+    }
+
+    const handleNext = async (data: FieldValues) => {
+        if (activeStep === steps.length - 1) {
+            await submitOrder(data);
         } else {
             setActiveStep(activeStep + 1);
         }
@@ -85,12 +116,9 @@ export default function CheckoutPage() {
 
     function submitDisabled(): boolean {
         if (activeStep === steps.length - 1) {
-            return !cardComplete.cardCvc
-                || !cardComplete.cardExpiry
-                || !cardComplete.cardNumber
-                || !methods.formState.isValid
+            return !cardComplete.cardCvc || !cardComplete.cardExpiry || !cardComplete.cardNumber || !methods.formState.isValid;
         } else {
-            return !methods.formState.isValid
+            return !methods.formState.isValid;
         }
     }
 
@@ -111,11 +139,17 @@ export default function CheckoutPage() {
                     {activeStep === steps.length ? (
                         <>
                             <Typography variant="h5" gutterBottom>
-                                Thank you for your order.
+                                {paymentMessage}
                             </Typography>
-                            <Typography variant="subtitle1">
-                                Your order number is #{orderNumber}. We have not emailed your order confirmation, and will not send you an update when your order has shipped as this is a fake store!
-                            </Typography>
+                            {paymentSucceeded ? (
+                                <Typography variant="subtitle1">
+                                    Your order number is #{orderNumber}. Please check "My Orders" under your profile to see the status and details of your order!
+                                </Typography>
+                            ) : (
+                                <Button variant="contained" onClick={handleBack}>
+                                    Go back and try again!
+                                </Button>
+                            )}
                         </>
                     ) : (
                         <form onSubmit={methods.handleSubmit(handleNext)}>

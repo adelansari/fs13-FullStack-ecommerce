@@ -107,3 +107,5 @@ Here I will try to create a debugger and implement error handling
 | HTTP Verb | Endpoint        |
 | :-------- | :-------------- |
 | GET       | `/api/Payments` |
+
+Test cards: https://stripe.com/docs/testing#cards
