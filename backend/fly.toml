@@ -1,0 +1,20 @@
+# fly.toml app configuration file generated for fs13-fullstack on 2023-05-03T23:17:58+03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "fs13-fullstack"
+primary_region = "ams"
+
+[env]
+  ASPNETCORE_URLS="http://+:8080"
+  StripeSettings__PublishableKey="pk_test_51N16a4DnDwuQYbaH8CfjBTIWAVB9UOpoxlzV2unVJXtYG8GhqKmCKkVItNv4OVqk1DXI2DO686g4Z2auZEjD6oBm00OrlJw2TZ"
+
+[build]
+  image = "adelansari2012/fs13-fullstack:latest"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
